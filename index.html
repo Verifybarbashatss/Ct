@@ -69,15 +69,23 @@
             width: 100%; 
             padding-bottom: 2vh; 
             margin-top: -20px; 
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
         
-        .footer-text { font-size: 13px; font-weight: 900; }
-        .footer-copyright { font-size: 7px; font-weight: 700; margin-top: 2px; text-transform: uppercase; }
+        .title-img-footer {
+            width: 90%;
+            max-width: 320px;
+            height: auto;
+            margin-top: 5px;
+        }
 
         .main-title-v1 { font-size: clamp(35px, 10vw, 50px); font-weight: 900; margin: 0; line-height: 1; }
         .instruction-text { font-size: 12px; font-weight: 700; margin-top: 8px; line-height: 1.2; max-width: 280px; text-transform: uppercase; margin-left: auto; margin-right: auto; }
 
         .back-button { position: absolute; top: 15px; left: 15px; cursor: pointer; z-index: 10; padding: 10px; }
+        .exit-img { width: 24px; height: auto; display: block; }
         
         .product-img {
             width: 100%;
@@ -152,8 +160,7 @@
 
         <div class="footer" style="margin-top: 0;">
             <img src="verify.png" class="verify-btn" onclick="abrirNFC()" style="margin-bottom: 2vh;">
-            <div class="footer-text">QUIEN MÁS SI NO BARBAS?</div>
-            <div class="footer-copyright">© 2025 EL BARBAS HATS. ALL RIGHTS RESERVED.</div>
+            <img src="tittle.png" class="title-img-footer" alt="El Barbas Hats">
         </div>
     </div>
 
@@ -161,10 +168,7 @@
     <div class="container scrollable-screen" id="screen-2">
         <div class="content-scroll" id="content-galaxy">
             <div class="back-button" onclick="irAInicio()">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2.5">
-                    <line x1="19" y1="12" x2="5" y2="12"></line>
-                    <polyline points="12 19 5 12 12 5"></polyline>
-                </svg>
+                <img src="exit.png" class="exit-img" alt="Back">
             </div>
 
             <div class="header-section" style="margin-top: 2vh;">
@@ -182,8 +186,7 @@
                     <span>SCANS</span>
                 </div>
                 <img src="verify.png" class="verify-btn" style="cursor: default; margin-bottom: 1vh; margin-top: -10px;">
-                <div class="footer-text">QUIEN MÁS SI NO BARBAS?</div>
-                <div class="footer-copyright">© 2025 EL BARBAS HATS. ALL RIGHTS RESERVED.</div>
+                <img src="tittle.png" class="title-img-footer" alt="El Barbas Hats">
             </div>
         </div>
     </div>
@@ -192,10 +195,7 @@
     <div class="container scrollable-screen" id="screen-3">
         <div class="content-scroll" id="content-scream">
             <div class="back-button" onclick="irAInicio()">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2.5">
-                    <line x1="19" y1="12" x2="5" y2="12"></line>
-                    <polyline points="12 19 5 12 12 5"></polyline>
-                </svg>
+                <img src="exit.png" class="exit-img" alt="Back">
             </div>
 
             <div class="header-section" style="margin-top: 2vh;">
@@ -213,8 +213,7 @@
                     <span>SCANS</span>
                 </div>
                 <img src="verify.png" class="verify-btn" style="cursor: default; margin-bottom: 1vh; margin-top: -10px;">
-                <div class="footer-text">QUIEN MÁS SI NO BARBAS?</div>
-                <div class="footer-copyright">© 2025 EL BARBAS HATS. ALL RIGHTS RESERVED.</div>
+                <img src="tittle.png" class="title-img-footer" alt="El Barbas Hats">
             </div>
         </div>
     </div>
@@ -264,7 +263,6 @@
         contentGalaxy.classList.add('hidden-content');
         contentScream.classList.add('hidden-content');
         
-        // Limpiamos la animación previa para asegurarnos de que NO se muevan al abrir el modal
         dotsContainer.classList.remove('animate-dots');
 
         nfcScreen.style.display = 'flex';
@@ -278,14 +276,12 @@
                 await ndef.scan({ signal: ndefController.signal });
                 
                 ndef.onreading = event => {
-                    // Activamos la animación de las bolitas ÚNICAMENTE cuando detecta la lectura física
                     dotsContainer.classList.add('animate-dots');
                     
                     const decoder = new TextDecoder();
                     for (const record of event.message.records) {
                         const textoEscaneado = decoder.decode(record.data).trim();
                         
-                        // .includes() corrige el prefijo de idioma oculto generado por NFC Tools (ej: "en1", "es2")
                         if (textoEscaneado.includes("1")) {
                             window.activarPantalla(1);
                             break;
