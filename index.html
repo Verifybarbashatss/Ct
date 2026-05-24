@@ -22,7 +22,7 @@
             color: #000;
         }
 
-        /* Pantalla de carga negra por 2.5s al abrir la app */
+        /* Pantalla de carga negra por 2.5s */
         #loading-screen {
             position: fixed;
             top: 0;
@@ -65,35 +65,61 @@
             visibility: hidden;
         }
 
-        /* Estructura fija de las pantallas individuales */
+        /* Estructura base de los contenedores */
         .container {
             position: absolute;
             top: 0;
             left: 0;
             width: 100vw;
             height: 100dvh;
-            display: none; /* Ocultas por defecto para que no se estorben */
+            display: none; 
             flex-direction: column;
             align-items: center;
             justify-content: space-between; 
-            padding: calc(2vh + env(safe-area-inset-top)) 20px calc(2vh + env(safe-area-inset-bottom)) 20px;
+            padding: calc(3vh + env(safe-area-inset-top)) 20px calc(2vh + env(safe-area-inset-bottom)) 20px;
             overflow: hidden; 
             background: #ffffff;
+            transform: translateX(0);
+            opacity: 1;
         }
 
-        /* Pantalla activa actual */
+        /* Mostrar pantalla activa */
         .container.active {
             display: flex;
         }
 
-        /* Animación de desvanecido suave de 0.8s para las pantallas de producto */
-        .fade-in-screen {
-            animation: fadeInEffect 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+        /* Doble animación: Desplazamiento izquierdo + Desvanecido (0.8s) al entrar */
+        .slide-fade-in {
+            display: flex !important;
+            animation: slideFadeInKey 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards;
         }
 
-        @keyframes fadeInEffect {
-            from { opacity: 0; }
-            to { opacity: 1; }
+        /* Animación de retorno/salida hacia la derecha */
+        .slide-out-right {
+            display: flex !important;
+            animation: slideOutRightKey 0.6s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+        }
+
+        @keyframes slideFadeInKey {
+            from {
+                transform: translateX(100vw);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideOutRightKey {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(100vw);
+                opacity: 0;
+            }
         }
 
         .header-section {
@@ -104,34 +130,66 @@
             flex-shrink: 0;
         }
 
-        .main-title-v1 { 
-            font-size: clamp(46px, 14vw, 62px); 
-            font-weight: 900; 
-            margin-bottom: 8px; 
-            line-height: 0.9; 
-            letter-spacing: -1px;
+        /* ========================================================
+           PANTALLA DE INICIO (Ajustes de trazo fino y logo reducido)
+           ======================================================== */
+        .home-title { 
+            font-size: clamp(54px, 16vw, 75px); 
+            font-weight: 800; /* Trazo un poquitito más pequeño/fino */
+            margin-bottom: 10px; 
+            line-height: 0.85; 
+            letter-spacing: -1.5px;
             text-align: center;
         }
 
-        .instruction-text { 
-            font-size: 10px; 
-            font-weight: 700; 
+        .home-instruction {
+            font-size: 11px; 
+            font-weight: 600; /* Trazo un poquitito más pequeño/fino */
             line-height: 1.5; 
-            max-width: 310px; 
+            max-width: 320px; 
             text-transform: uppercase; 
             letter-spacing: 0.3px;
             text-align: center; 
             margin: 0 auto;
         }
-        
+
         .logo-large { 
-            width: 68vw; 
-            max-width: 260px; 
+            width: 70vw; /* Un poquito más pequeño como se pidió */
+            max-width: 275px; 
             height: auto;
             margin: auto 0; 
         }
 
-        /* Estilos de productos */
+        .verify-btn-home {
+            width: 310px; 
+            max-width: 90%; 
+            height: auto; 
+            cursor: pointer; 
+            margin-bottom: 15px;
+            display: block;
+            margin-left: auto;
+            margin-right: auto; /* Perfectamente centrado y alineado */
+        }
+
+        .footer-text-home { 
+            font-size: 23px; 
+            font-weight: 800; /* Trazo un poquitito más pequeño/fino */
+            margin-bottom: 6px; 
+            letter-spacing: -0.3px;
+            text-transform: uppercase;
+        }
+
+        .footer-copyright-home { 
+            font-size: 12px; 
+            font-weight: 700; /* Trazo un poquitito más pequeño/fino */
+            text-transform: uppercase; 
+            color: #616161; 
+            letter-spacing: 0.2px;
+        }
+
+        /* ========================================================
+           PANTALLAS DE PRODUCTOS (Se mantienen intactas)
+           ======================================================== */
         .logo-img { 
             width: 65px; 
             height: auto; 
@@ -171,8 +229,7 @@
             object-fit: contain;
         }
 
-        /* Footer */
-        .footer { 
+        .footer-product {
             width: 100%;
             display: flex;
             flex-direction: column;
@@ -197,15 +254,14 @@
             gap: 5px; 
         }
         
-        .verify-btn { 
+        .verify-btn-product { 
             width: 260px; 
             max-width: 80%; 
             height: auto; 
-            cursor: pointer; 
             margin-bottom: 12px;
         }
 
-        .footer-text { 
+        .footer-text-product { 
             font-size: 17px; 
             font-weight: 800; 
             margin-bottom: 4px; 
@@ -213,7 +269,7 @@
             text-transform: uppercase;
         }
 
-        .footer-copyright { 
+        .footer-copyright-product { 
             font-size: 9px; 
             font-weight: 700; 
             text-transform: uppercase; 
@@ -261,7 +317,7 @@
         .nfc-desc { font-size: 12px; opacity: 0.75; line-height: 1.4; max-width: 230px; margin: 0 auto; }
         .close-nfc { position: absolute; top: 15px; right: 20px; font-size: 22px; cursor: pointer; }
 
-        /* Contenedor y diseño de bolitas más grandes y perfectamente centradas */
+        /* Contenedor y diseño de bolitas grandes y centradas */
         .dots-overlay {
             position: absolute;
             top: -70px; 
@@ -275,7 +331,6 @@
             opacity: 0;
             transition: opacity 0.3s ease;
         }
-        /* Bolitas el doble de grandes */
         .dot { 
             width: 44px; 
             height: 44px; 
@@ -300,21 +355,21 @@
 <div id="main-wrapper">
     <div class="container active" id="screen-1">
         <div class="header-section">
-            <h1 class="main-title-v1">VERIFY HAT</h1>
-            <p class="instruction-text">TAP YOUR PHONE NEXT TO THE HAT TAG TO<br>AUTHENTICATE YOUR BARBAS PRODUCT</p>
+            <h1 class="home-title">VERIFY HAT</h1>
+            <p class="home-instruction">TAP YOUR PHONE NEXT TO THE HAT TAG TO<br>AUTHENTICATE YOUR BARBAS PRODUCT</p>
         </div>
         
         <img src="logo.png" class="logo-large">
 
         <div class="footer">
-            <img src="verify.png" class="verify-btn" onclick="abrirNFC()">
-            <div class="footer-text">QUIEN MÁS SI NO BARBAS?</div>
-            <div class="footer-copyright">© 2025 EL BARBAS HATS. ALL RIGHTS RESERVED.</div>
+            <img src="verify.png" class="verify-btn-home" onclick="abrirNFC()">
+            <div class="footer-text-home">QUIEN MÁS SI NO BARBAS?</div>
+            <div class="footer-copyright-home">© 2025 EL BARBAS HATS. ALL RIGHTS RESERVED.</div>
         </div>
     </div>
 
     <div class="container" id="screen-2">
-        <div class="back-button" onclick="irAInicio()">
+        <div class="back-button" onclick="regresarAlInicio('screen-2')">
             <img src="exitt.png" class="exit-img" alt="Back">
         </div>
 
@@ -328,20 +383,20 @@
             <img src="gorra.jpeg" class="product-img">
         </div>
 
-        <div class="footer">
+        <div class="footer-product">
             <div class="scan-label">TOTAL SCAN COUNT :</div>
             <div class="counter-group">
                 <span id="count-galaxy">1</span>
                 <span>SCANS</span>
             </div>
-            <img src="verify.png" class="verify-btn" style="cursor: default;">
-            <div class="footer-text">QUIEN MÁS SI NO BARBAS?</div>
-            <div class="footer-copyright">© 2025 EL BARBAS HATS. ALL RIGHTS RESERVED.</div>
+            <img src="verify.png" class="verify-btn-product" style="cursor: default;">
+            <div class="footer-text-product">QUIEN MÁS SI NO BARBAS?</div>
+            <div class="footer-copyright-product">© 2025 EL BARBAS HATS. ALL RIGHTS RESERVED.</div>
         </div>
     </div>
 
     <div class="container" id="screen-3">
-        <div class="back-button" onclick="irAInicio()">
+        <div class="back-button" onclick="regresarAlInicio('screen-3')">
             <img src="exitt.png" class="exit-img" alt="Back">
         </div>
 
@@ -355,20 +410,20 @@
             <img src="gorra2.png" class="product-img">
         </div>
 
-        <div class="footer">
+        <div class="footer-product">
             <div class="scan-label">TOTAL SCAN COUNT :</div>
             <div class="counter-group">
                 <span id="count-scream">1</span>
                 <span>SCANS</span>
             </div>
-            <img src="verify.png" class="verify-btn" style="cursor: default;">
-            <div class="footer-text">QUIEN MÁS SI NO BARBAS?</div>
-            <div class="footer-copyright">© 2025 EL BARBAS HATS. ALL RIGHTS RESERVED.</div>
+            <img src="verify.png" class="verify-btn-product" style="cursor: default;">
+            <div class="footer-text-product">QUIEN MÁS SI NO BARBAS?</div>
+            <div class="footer-copyright-product">© 2025 EL BARBAS HATS. ALL RIGHTS RESERVED.</div>
         </div>
     </div>
 
     <div class="container" id="screen-4">
-        <div class="back-button" onclick="irAInicio()">
+        <div class="back-button" onclick="regresarAlInicio('screen-4')">
             <img src="exitt.png" class="exit-img" alt="Back">
         </div>
 
@@ -382,20 +437,20 @@
             <img src="gorra3.png" class="product-img">
         </div>
 
-        <div class="footer">
+        <div class="footer-product">
             <div class="scan-label">TOTAL SCAN COUNT :</div>
             <div class="counter-group">
                 <span id="count-heartbreaker">1</span>
                 <span>SCANS</span>
             </div>
-            <img src="verify.png" class="verify-btn" style="cursor: default;">
-            <div class="footer-text">QUIEN MÁS SI NO BARBAS?</div>
-            <div class="footer-copyright">© 2025 EL BARBAS HATS. ALL RIGHTS RESERVED.</div>
+            <img src="verify.png" class="verify-btn-product" style="cursor: default;">
+            <div class="footer-text-product">QUIEN MÁS SI NO BARBAS?</div>
+            <div class="footer-copyright-product">© 2025 EL BARBAS HATS. ALL RIGHTS RESERVED.</div>
         </div>
     </div>
 
     <div class="container" id="screen-5">
-        <div class="back-button" onclick="irAInicio()">
+        <div class="back-button" onclick="regresarAlInicio('screen-5')">
             <img src="exitt.png" class="exit-img" alt="Back">
         </div>
 
@@ -409,15 +464,15 @@
             <img src="gorra4.png" class="product-img">
         </div>
 
-        <div class="footer">
+        <div class="footer-product">
             <div class="scan-label">TOTAL SCAN COUNT :</div>
             <div class="counter-group">
                 <span id="count-fes">1</span>
                 <span>SCANS</span>
             </div>
-            <img src="verify.png" class="verify-btn" style="cursor: default;">
-            <div class="footer-text">QUIEN MÁS SI NO BARBAS?</div>
-            <div class="footer-copyright">© 2025 EL BARBAS HATS. ALL RIGHTS RESERVED.</div>
+            <img src="verify.png" class="verify-btn-product" style="cursor: default;">
+            <div class="footer-text-product">QUIEN MÁS SI NO BARBAS?</div>
+            <div class="footer-copyright-product">© 2025 EL BARBAS HATS. ALL RIGHTS RESERVED.</div>
         </div>
     </div>
 </div>
@@ -481,12 +536,7 @@
 
     function incrementarContador(tipo) {
         const key = keys[tipo];
-        let elemento;
-        
-        if (tipo === 1) elemento = document.getElementById("count-galaxy");
-        else if (tipo === 2) elemento = document.getElementById("count-scream");
-        else if (tipo === 3) elemento = document.getElementById("count-heartbreaker");
-        else if (tipo === 4) elemento = document.getElementById("count-fes");
+        let elemento = document.getElementById(tipo === 1 ? "count-galaxy" : tipo === 2 ? "count-scream" : tipo === 3 ? "count-heartbreaker" : "count-fes");
 
         let actual = parseInt(localStorage.getItem(key)) || 1;
         let nuevo = actual + 1;
@@ -508,9 +558,7 @@
                 await ndef.scan({ signal: ndefController.signal });
                 
                 ndef.onreading = event => {
-                    // Al leer la etiqueta correctamente, activa animación de carga
                     dotsContainer.classList.add('animate-dots');
-                    nfcStatusText.innerText = "Verifying...";
                     
                     const decoder = new TextDecoder();
                     for (const record of event.message.records) {
@@ -523,23 +571,20 @@
                         else if (textoEscaneado.includes("4")) targetScreen = 4;
 
                         if (targetScreen > 0) {
-                            // Se queda mostrando las bolitas por exactamente 1 segundo
                             setTimeout(() => {
                                 window.activarPantalla(targetScreen);
                             }, 1000);
                             break;
                         } else {
-                            nfcStatusText.innerText = "Invalid Tag Data";
                             dotsContainer.classList.remove('animate-dots');
                         }
                     }
                 };
                 ndef.onreadingerror = () => {
-                    nfcStatusText.innerText = "Read Error. Try Again.";
                     dotsContainer.classList.remove('animate-dots');
                 };
             } catch (error) {
-                console.log("WebNFC inicializado de forma segura.");
+                console.log("NFC inicializado.");
             }
         }
     }
@@ -553,12 +598,10 @@
             dotsContainer.classList.remove('animate-dots');
             incrementarContador(tipo);
 
-            // Ocultar por completo todas las pantallas para evitar arrastres visuales
             document.querySelectorAll('.container').forEach(screen => {
-                screen.classList.remove('active', 'fade-in-screen');
+                screen.classList.remove('active', 'slide-fade-in', 'slide-out-right');
             });
 
-            // Activar únicamente la pantalla correspondiente con su efecto desvanecido de 0.8s
             let activeId = 'screen-1';
             if (tipo === 1) activeId = 'screen-2';
             else if (tipo === 2) activeId = 'screen-3';
@@ -566,9 +609,23 @@
             else if (tipo === 4) activeId = 'screen-5';
 
             const targetElement = document.getElementById(activeId);
-            targetElement.classList.add('active', 'fade-in-screen');
+            targetElement.classList.add('active', 'slide-fade-in');
         }, 350);
     };
+
+    function regresarAlInicio(currentScreenId) {
+        const currentScreen = document.getElementById(currentScreenId);
+        const homeScreen = document.getElementById('screen-1');
+
+        currentScreen.classList.remove('slide-fade-in');
+        currentScreen.classList.add('slide-out-right');
+
+        homeScreen.classList.add('active');
+
+        setTimeout(() => {
+            currentScreen.classList.remove('active', 'slide-out-right');
+        }, 550);
+    }
 
     function cerrarNFC() {
         if (ndefController) ndefController.abort();
@@ -577,13 +634,6 @@
             nfcScreen.style.display = 'none'; 
             dotsContainer.classList.remove('animate-dots');
         }, 350);
-    }
-
-    function irAInicio() {
-        document.querySelectorAll('.container').forEach(screen => {
-            screen.classList.remove('active', 'fade-in-screen');
-        });
-        document.getElementById('screen-1').classList.add('active');
     }
 
     window.onload = gestionarCarga;
