@@ -22,7 +22,7 @@
             color: #000;
         }
 
-        /* Pantalla de carga negra por 2.5s */
+        /* Pantalla de carga negra por 2 segundos */
         #loading-screen {
             position: fixed;
             top: 0;
@@ -43,7 +43,8 @@
             height: auto;
             opacity: 0;
             transform: scale(0.9);
-            animation: smoothHeartbeat 2.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+            /* Ajustado a 2.0s para sincronizar con el desvanecimiento */
+            animation: smoothHeartbeat 2.0s cubic-bezier(0.4, 0, 0.2, 1) forwards;
             will-change: transform, opacity;
         }
 
@@ -135,7 +136,7 @@
            ======================================================== */
         .home-title { 
             font-size: clamp(54px, 16vw, 75px); 
-            font-weight: 800; /* Trazo un poquitito más pequeño/fino */
+            font-weight: 800; 
             margin-bottom: 10px; 
             line-height: 0.85; 
             letter-spacing: -1.5px;
@@ -144,7 +145,7 @@
 
         .home-instruction {
             font-size: 11px; 
-            font-weight: 600; /* Trazo un poquitito más pequeño/fino */
+            font-weight: 600; 
             line-height: 1.5; 
             max-width: 320px; 
             text-transform: uppercase; 
@@ -154,7 +155,7 @@
         }
 
         .logo-large { 
-            width: 70vw; /* Un poquito más pequeño como se pidió */
+            width: 70vw; 
             max-width: 275px; 
             height: auto;
             margin: auto 0; 
@@ -168,12 +169,12 @@
             margin-bottom: 15px;
             display: block;
             margin-left: auto;
-            margin-right: auto; /* Perfectamente centrado y alineado */
+            margin-right: auto; 
         }
 
         .footer-text-home { 
             font-size: 23px; 
-            font-weight: 800; /* Trazo un poquitito más pequeño/fino */
+            font-weight: 800; 
             margin-bottom: 6px; 
             letter-spacing: -0.3px;
             text-transform: uppercase;
@@ -181,7 +182,7 @@
 
         .footer-copyright-home { 
             font-size: 12px; 
-            font-weight: 700; /* Trazo un poquitito más pequeño/fino */
+            font-weight: 700; 
             text-transform: uppercase; 
             color: #616161; 
             letter-spacing: 0.2px;
@@ -508,13 +509,17 @@
 
     function gestionarCarga() {
         inicializarContadores();
+        
+        // Ejecución forzada a los 2 segundos exactos (2000 milisegundos)
         setTimeout(() => {
             loadingScreen.style.opacity = '0';
             wrapper.style.visibility = 'visible';
+            
+            // Remueve por completo el contenedor una vez termina la transición visual
             setTimeout(() => {
                 loadingScreen.style.display = 'none';
             }, 400);
-        }, 2500);
+        }, 2000);
     }
 
     function inicializarContadores() {
