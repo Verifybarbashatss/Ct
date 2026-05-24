@@ -17,9 +17,10 @@
             color: #000;
         }
 
+        /* Se cambia el ancho a 300vw para soportar las 3 pantallas */
         #main-wrapper {
             display: flex;
-            width: 200vw;
+            width: 300vw;
             height: 100dvh;
             transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
         }
@@ -38,24 +39,22 @@
             flex-shrink: 0;
         }
 
-        #screen-2 {
+        .scrollable-screen {
             overflow-y: auto;
             display: block;
             -webkit-overflow-scrolling: touch;
         }
 
-        /* ESTADO INICIAL PARA LA APARICIÓN SUAVE */
         .content-scroll {
             display: flex;
             flex-direction: column;
             align-items: center;
             min-height: 100%;
             width: 100%;
-            opacity: 1; /* Por defecto visible */
-            transition: opacity 1.5s ease-in-out; /* Aparición gradual */
+            opacity: 1;
+            transition: opacity 1.5s ease-in-out;
         }
 
-        /* Clase para ocultar antes de la animación */
         .hidden-content {
             opacity: 0;
         }
@@ -143,6 +142,7 @@
 <body>
 
 <div id="main-wrapper">
+    <!-- PANTALLA 1: INICIO -->
     <div class="container">
         <div class="header-section" style="margin-top: 2vh;">
             <h1 class="main-title-v1">VERIFY HAT</h1>
@@ -158,8 +158,9 @@
         </div>
     </div>
 
-    <div class="container" id="screen-2">
-        <div class="content-scroll" id="content-to-fade">
+    <!-- PANTALLA 2: CT GALAXY (NFC = 1) -->
+    <div class="container scrollable-screen" id="screen-2">
+        <div class="content-scroll" id="content-galaxy">
             <div class="back-button" onclick="irAInicio()">
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2.5">
                     <line x1="19" y1="12" x2="5" y2="12"></line>
@@ -178,7 +179,38 @@
             <div class="footer">
                 <div class="scan-label">TOTAL SCAN COUNT :</div>
                 <div class="counter-group">
-                    <span id="num">1</span>
+                    <span class="num-counter">1</span>
+                    <span>SCANS</span>
+                </div>
+                <img src="verify.png" class="verify-btn" style="cursor: default; margin-bottom: 1vh; margin-top: -10px;">
+                <div class="footer-text">QUIEN MÁS SI NO BARBAS?</div>
+                <div class="footer-copyright">© 2025 EL BARBAS HATS. ALL RIGHTS RESERVED.</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PANTALLA 3: SCREAM (NFC = 2) -->
+    <div class="container scrollable-screen" id="screen-3">
+        <div class="content-scroll" id="content-scream">
+            <div class="back-button" onclick="irAInicio()">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2.5">
+                    <line x1="19" y1="12" x2="5" y2="12"></line>
+                    <polyline points="12 19 5 12 12 5"></polyline>
+                </svg>
+            </div>
+
+            <div class="header-section" style="margin-top: 2vh;">
+                <img src="logo.png" class="logo-img">
+                <h1 class="brand-title">AUTHENTIC</h1>
+                <div class="brand-subtitle">SCREAM</div>
+            </div>
+
+            <img src="gorra2.png" class="product-img">
+
+            <div class="footer">
+                <div class="scan-label">TOTAL SCAN COUNT :</div>
+                <div class="counter-group">
+                    <span class="num-counter">1</span>
                     <span>SCANS</span>
                 </div>
                 <img src="verify.png" class="verify-btn" style="cursor: default; margin-bottom: 1vh; margin-top: -10px;">
@@ -206,9 +238,11 @@
     const wrapper = document.getElementById('main-wrapper');
     const nfcScreen = document.getElementById('nfc-screen');
     const dotsContainer = document.getElementById('dots-container');
-    const numDisplay = document.getElementById("num");
+    const counters = document.querySelectorAll(".num-counter");
     const screen2 = document.getElementById('screen-2');
-    const contentToFade = document.getElementById('content-to-fade');
+    const screen3 = document.getElementById('screen-3');
+    const contentGalaxy = document.getElementById('content-galaxy');
+    const contentScream = document.getElementById('content-scream');
     const nfcStatusText = document.getElementById('nfc-status-text');
 
     const storageKey = "b82728"; 
@@ -216,27 +250,26 @@
 
     function cargarContadorLocal() {
         const val = localStorage.getItem(storageKey);
-        numDisplay.innerText = (val && !isNaN(val)) ? val : "1";
+        const valorFinal = (val && !isNaN(val)) ? val : "1";
+        counters.forEach(c => c.innerText = valorFinal);
     }
 
     function incrementarContadorLocal() {
-        let actual = parseInt(numDisplay.innerText) || 1;
+        let actual = parseInt(counters[0].innerText) || 1;
         let nuevo = actual + 1;
-        numDisplay.innerText = nuevo;
+        counters.forEach(c => c.innerText = nuevo);
         localStorage.setItem(storageKey, nuevo);
     }
 
     async function abrirNFC() {
-        // Ocultamos el contenido de la pantalla 2 preventivamente
-        contentToFade.classList.add('hidden-content');
+        contentGalaxy.classList.add('hidden-content');
+        contentScream.classList.add('hidden-content');
 
-        // Mostramos el modal de escaneo indefinidamente
         nfcScreen.style.display = 'flex';
         setTimeout(() => nfcScreen.style.opacity = '1', 10);
         setTimeout(() => dotsContainer.classList.add('animate-dots'), 500);
         nfcStatusText.innerText = "Ready to scan";
 
-        // Inicializamos el hardware de lectura NFC del navegador (WebNFC)
         if ('NDEFReader' in window) {
             try {
                 ndefController = new AbortController();
@@ -248,9 +281,11 @@
                     for (const record of event.message.records) {
                         const textoEscaneado = decoder.decode(record.data).trim();
                         
-                        // Evalúa estrictamente que el valor del tag sea exactamente "1"
                         if (textoEscaneado === "1") {
-                            window.activarPantallaGalaxy();
+                            window.activarPantalla(1);
+                            break;
+                        } else if (textoEscaneado === "2") {
+                            window.activarPantalla(2);
                             break;
                         } else {
                             nfcStatusText.innerText = "Invalid Tag Data";
@@ -268,11 +303,10 @@
         }
     }
 
-    // FUNCIÓN GLOBAL: Rompe el bucle de espera y avanza a la pantalla 2.
-    // Puede ser invocada de manera interna por WebNFC o externamente por tu aplicación contenedora.
-    window.activarPantallaGalaxy = function() {
+    // El parámetro 'tipo' define a dónde se desplaza: 1 para CT GALAXY, 2 para SCREAM
+    window.activarPantalla = function(tipo) {
         if (ndefController) {
-            ndefController.abort(); // Apaga el hilo del lector si estaba activo
+            ndefController.abort();
         }
         
         nfcScreen.style.opacity = '0';
@@ -280,14 +314,21 @@
             nfcScreen.style.display = 'none';
             dotsContainer.classList.remove('animate-dots');
             
-            // Transición a la interfaz de CT GALAXY
-            wrapper.style.transform = 'translateX(-100vw)';
-            screen2.scrollTop = 0;
             incrementarContadorLocal();
 
-            setTimeout(() => {
-                contentToFade.classList.remove('hidden-content');
-            }, 100);
+            if (tipo === 1) {
+                wrapper.style.transform = 'translateX(-100vw)';
+                screen2.scrollTop = 0;
+                setTimeout(() => {
+                    contentGalaxy.classList.remove('hidden-content');
+                }, 100);
+            } else if (tipo === 2) {
+                wrapper.style.transform = 'translateX(-200vw)';
+                screen3.scrollTop = 0;
+                setTimeout(() => {
+                    contentScream.classList.remove('hidden-content');
+                }, 100);
+            }
 
         }, 350);
     };
