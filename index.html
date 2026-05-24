@@ -17,11 +17,69 @@
             color: #000;
         }
 
+        /* Pantalla de carga negra por 2.5s */
+        #loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100dvh;
+            background: #000000;
+            z-index: 999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.4s ease-in-out;
+        }
+
+        /* logoo.png - Animación ultra fluida de latido sin saltos de fotogramas */
+        .loading-logo {
+            width: 40vw; 
+            max-width: 160px;
+            height: auto;
+            opacity: 0;
+            transform: scale(0.9);
+            /* Se aplica una curva bezier de aceleración/desaceleración suave (renderizado a 60fps+ nativos) */
+            animation: smoothHeartbeat 2.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+            will-change: transform, opacity; /* Optimización de hardware para evitar trabas */
+        }
+
+        /* Replicación corregida: Transición de escala progresiva y limpia */
+        @keyframes smoothHeartbeat {
+            0% {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            20% {
+                opacity: 0.4;
+                transform: scale(0.94);
+            }
+            35% {
+                opacity: 1;
+                transform: scale(1.06); /* Pulso principal */
+            }
+            50% {
+                transform: scale(0.98); /* Retorno orgánico lento */
+            }
+            65% {
+                transform: scale(1.01); /* Micro-pulso de estabilización */
+            }
+            75% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
         #main-wrapper {
             display: flex;
-            width: 300vw;
+            width: 400vw;
             height: 100dvh;
             transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            visibility: hidden;
         }
 
         .container {
@@ -30,8 +88,8 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: space-between;
-            padding: 2vh 20px env(safe-area-inset-bottom);
+            justify-content: flex-start;
+            padding: 6vh 24px env(safe-area-inset-bottom);
             box-sizing: border-box;
             text-align: center;
             position: relative;
@@ -58,37 +116,79 @@
             opacity: 0;
         }
 
-        .logo-img { width: 80px; height: auto; margin-bottom: 2px; }
-        .logo-large { width: 85%; max-width: 260px; height: auto; margin: auto; }
-        
-        /* Aumentado el tamaño de AUTHENTIC y ajustado el interlineado */
-        .brand-title { 
-            font-size: clamp(45px, 13vw, 65px); 
+        .header-section {
+            margin-top: 0;
+            width: 100%;
+            margin-bottom: 4vh;
+        }
+
+        .main-title-v1 { 
+            font-size: clamp(44px, 13vw, 58px); 
             font-weight: 900; 
-            letter-spacing: -1.5px; 
-            margin: 0; 
+            margin: 0 0 10px 0; 
             line-height: 0.9; 
+            letter-spacing: -0.5px;
+        }
+
+        .instruction-text { 
+            font-size: 11px; 
+            font-weight: 700; 
+            line-height: 1.3; 
+            max-width: 290px; 
+            text-transform: uppercase; 
+            margin: 0 auto; 
+            letter-spacing: 0.2px;
         }
         
-        /* Se mantiene el tamaño grande para los subtítulos (SCREAM / CT GALAXY) */
-        .brand-subtitle { 
-            font-size: clamp(35px, 10vw, 50px); 
-            font-weight: 900; 
-            margin-top: 5px; 
-            line-height: 1;
+        .logo-large { 
+            width: 72vw; 
+            max-width: 280px; 
+            height: auto; 
+            margin-bottom: 4vh; 
         }
-        
-        .verify-btn { width: 270px; max-width: 80%; height: auto; cursor: pointer; flex-shrink: 0; }
-        
+
         .footer { 
             flex-shrink: 0; 
             width: 100%; 
-            padding-bottom: 2vh; 
-            margin-top: -20px; 
+            margin-top: auto; 
+            margin-bottom: 2vh;
             display: flex;
             flex-direction: column;
             align-items: center;
         }
+        
+        .verify-btn { 
+            width: 280px; 
+            max-width: 85%; 
+            height: auto; 
+            cursor: pointer; 
+            flex-shrink: 0; 
+            margin-bottom: 24px;
+            transform: scaleY(1.12);
+        }
+
+        .footer-text { 
+            font-size: 19px; 
+            font-weight: 800; 
+            color: #000000; 
+            margin: 0 0 6px 0; 
+            letter-spacing: -0.2px;
+            text-transform: uppercase;
+        }
+
+        .footer-copyright { 
+            font-size: 11px; 
+            font-weight: 700; 
+            text-transform: uppercase; 
+            color: #8a8a8a; 
+            margin: 0;
+            letter-spacing: 0.1px;
+        }
+
+        /* Estilos de las Pantallas de Producto */
+        .logo-img { width: 80px; height: auto; margin-bottom: 2px; }
+        .brand-title { font-size: clamp(45px, 12vw, 65px); font-weight: 900; letter-spacing: -1.2px; margin: 0; line-height: 0.85; text-transform: uppercase; }
+        .brand-subtitle { font-size: clamp(24px, 6vw, 32px); font-weight: 700; margin-top: 8px; text-transform: uppercase; }
         
         .title-img-footer {
             width: 90%;
@@ -97,12 +197,8 @@
             margin-top: 5px;
         }
 
-        .main-title-v1 { font-size: clamp(35px, 10vw, 50px); font-weight: 900; margin: 0; line-height: 1; }
-        .instruction-text { font-size: 12px; font-weight: 700; margin-top: 8px; line-height: 1.2; max-width: 280px; text-transform: uppercase; margin-left: auto; margin-right: auto; }
-
-        /* Ajustado el botón de salida a 40px */
         .back-button { position: absolute; top: 15px; left: 15px; cursor: pointer; z-index: 10; padding: 5px; }
-        .exit-img { width: 40px; height: auto; display: block; }
+        .exit-img { width: 40px; height: 40px; object-fit: contain; display: block; }
         
         .product-img {
             width: 100%;
@@ -116,6 +212,7 @@
         .scan-label { font-size: 11px; font-weight: 600; letter-spacing: 0.5px; margin-bottom: 2px; }
         .counter-group { font-size: 28px; font-weight: 700; margin-bottom: 8px; display: flex; justify-content: center; gap: 6px; }
 
+        /* Modal NFC */
         #nfc-screen {
             display: none;
             position: fixed;
@@ -165,23 +262,26 @@
 </head>
 <body>
 
+<div id="loading-screen">
+    <img src="logoo.png" class="loading-logo" alt="Loading...">
+</div>
+
 <div id="main-wrapper">
-    <!-- PANTALLA 1: INICIO -->
     <div class="container">
-        <div class="header-section" style="margin-top: 2vh;">
+        <div class="header-section">
             <h1 class="main-title-v1">VERIFY HAT</h1>
-            <p class="instruction-text">TAP YOUR PHONE NEXT TO THE HAT TAG TO AUTHENTICATE YOUR BARBAS PRODUCT</p>
+            <p class="instruction-text">TAP YOUR PHONE NEXT TO THE HAT TAG TO<br>AUTHENTICATE YOUR BARBAS PRODUCT</p>
         </div>
         
         <img src="logo.png" class="logo-large">
 
-        <div class="footer" style="margin-top: 0;">
-            <img src="verify.png" class="verify-btn" onclick="abrirNFC()" style="margin-bottom: 2vh;">
-            <img src="tittle.png" class="title-img-footer" alt="El Barbas Hats">
+        <div class="footer">
+            <img src="verify.png" class="verify-btn" onclick="abrirNFC()">
+            <div class="footer-text">QUIEN MÁS SI NO BARBAS?</div>
+            <div class="footer-copyright">© 2025 EL BARBAS HATS. ALL RIGHTS RESERVED.</div>
         </div>
     </div>
 
-    <!-- PANTALLA 2: CT GALAXY (NFC = 1) -->
     <div class="container scrollable-screen" id="screen-2">
         <div class="content-scroll" id="content-galaxy">
             <div class="back-button" onclick="irAInicio()">
@@ -199,7 +299,7 @@
             <div class="footer">
                 <div class="scan-label">TOTAL SCAN COUNT :</div>
                 <div class="counter-group">
-                    <span class="num-counter">1</span>
+                    <span class="num-counter" id="count-galaxy">1</span>
                     <span>SCANS</span>
                 </div>
                 <img src="verify.png" class="verify-btn" style="cursor: default; margin-bottom: 1vh; margin-top: -10px;">
@@ -208,7 +308,6 @@
         </div>
     </div>
 
-    <!-- PANTALLA 3: SCREAM (NFC = 2) -->
     <div class="container scrollable-screen" id="screen-3">
         <div class="content-scroll" id="content-scream">
             <div class="back-button" onclick="irAInicio()">
@@ -226,7 +325,33 @@
             <div class="footer">
                 <div class="scan-label">TOTAL SCAN COUNT :</div>
                 <div class="counter-group">
-                    <span class="num-counter">1</span>
+                    <span class="num-counter" id="count-scream">1</span>
+                    <span>SCANS</span>
+                </div>
+                <img src="verify.png" class="verify-btn" style="cursor: default; margin-bottom: 1vh; margin-top: -10px;">
+                <img src="tittle.png" class="title-img-footer" alt="El Barbas Hats">
+            </div>
+        </div>
+    </div>
+
+    <div class="container scrollable-screen" id="screen-4">
+        <div class="content-scroll" id="content-heartbreaker">
+            <div class="back-button" onclick="irAInicio()">
+                <img src="exitt.png" class="exit-img" alt="Back">
+            </div>
+
+            <div class="header-section" style="margin-top: 2vh;">
+                <img src="logo.png" class="logo-img">
+                <h1 class="brand-title">AUTHENTIC</h1>
+                <div class="brand-subtitle">HEARTBREAKER</div>
+            </div>
+
+            <img src="gorra3.png" class="product-img">
+
+            <div class="footer">
+                <div class="scan-label">TOTAL SCAN COUNT :</div>
+                <div class="counter-group">
+                    <span class="num-counter" id="count-heartbreaker">1</span>
                     <span>SCANS</span>
                 </div>
                 <img src="verify.png" class="verify-btn" style="cursor: default; margin-bottom: 1vh; margin-top: -10px;">
@@ -253,32 +378,69 @@
     const wrapper = document.getElementById('main-wrapper');
     const nfcScreen = document.getElementById('nfc-screen');
     const dotsContainer = document.getElementById('dots-container');
-    const counters = document.querySelectorAll(".num-counter");
+    const loadingScreen = document.getElementById('loading-screen');
+    
     const screen2 = document.getElementById('screen-2');
     const screen3 = document.getElementById('screen-3');
+    const screen4 = document.getElementById('screen-4');
     const contentGalaxy = document.getElementById('content-galaxy');
     const contentScream = document.getElementById('content-scream');
+    const contentHeartbreaker = document.getElementById('content-heartbreaker');
     const nfcStatusText = document.getElementById('nfc-status-text');
 
-    const storageKey = "b82728"; 
+    const keys = {
+        1: "scan_galaxy_v3",
+        2: "scan_scream_v3",
+        3: "scan_heartbreaker_v3"
+    };
+
     let ndefController = null;
 
-    function cargarContadorLocal() {
-        const val = localStorage.getItem(storageKey);
-        const valorFinal = (val && !isNaN(val)) ? val : "1";
-        counters.forEach(c => c.innerText = valorFinal);
+    function gestionarCarga() {
+        inicializarContadores();
+        
+        setTimeout(() => {
+            loadingScreen.style.opacity = '0';
+            wrapper.style.visibility = 'visible';
+            setTimeout(() => {
+                loadingScreen.style.display = 'none';
+            }, 400);
+        }, 2500);
     }
 
-    function incrementarContadorLocal() {
-        let actual = parseInt(counters[0].innerText) || 1;
+    function inicializarContadores() {
+        const cGalaxy = document.getElementById("count-galaxy");
+        const cScream = document.getElementById("count-scream");
+        const cHeartbreaker = document.getElementById("count-heartbreaker");
+
+        if (!localStorage.getItem(keys[1])) localStorage.setItem(keys[1], "1");
+        if (!localStorage.getItem(keys[2])) localStorage.setItem(keys[2], "1");
+        if (!localStorage.getItem(keys[3])) localStorage.setItem(keys[3], "1");
+
+        cGalaxy.innerText = localStorage.getItem(keys[1]);
+        cScream.innerText = localStorage.getItem(keys[2]);
+        cHeartbreaker.innerText = localStorage.getItem(keys[3]);
+    }
+
+    function incrementarContador(tipo) {
+        const key = keys[tipo];
+        let elemento;
+        
+        if (tipo === 1) elemento = document.getElementById("count-galaxy");
+        else if (tipo === 2) elemento = document.getElementById("count-scream");
+        else if (tipo === 3) elemento = document.getElementById("count-heartbreaker");
+
+        let actual = parseInt(localStorage.getItem(key)) || 1;
         let nuevo = actual + 1;
-        counters.forEach(c => c.innerText = nuevo);
-        localStorage.setItem(storageKey, nuevo);
+        
+        localStorage.setItem(key, nuevo);
+        elemento.innerText = nuevo;
     }
 
     async function abrirNFC() {
         contentGalaxy.classList.add('hidden-content');
         contentScream.classList.add('hidden-content');
+        contentHeartbreaker.classList.add('hidden-content');
         
         dotsContainer.classList.remove('animate-dots');
 
@@ -305,6 +467,9 @@
                         } else if (textoEscaneado.includes("2")) {
                             window.activarPantalla(2);
                             break;
+                        } else if (textoEscaneado.includes("3")) {
+                            window.activarPantalla(3);
+                            break;
                         } else {
                             nfcStatusText.innerText = "Invalid Tag Data";
                             dotsContainer.classList.remove('animate-dots');
@@ -318,7 +483,7 @@
                 };
 
             } catch (error) {
-                console.log("WebNFC a la espera de lectura o puente nativo.");
+                console.log("WebNFC listo.");
             }
         }
     }
@@ -333,20 +498,20 @@
             nfcScreen.style.display = 'none';
             dotsContainer.classList.remove('animate-dots');
             
-            incrementarContadorLocal();
+            incrementarContador(tipo);
 
             if (tipo === 1) {
                 wrapper.style.transform = 'translateX(-100vw)';
                 screen2.scrollTop = 0;
-                setTimeout(() => {
-                    contentGalaxy.classList.remove('hidden-content');
-                }, 100);
+                setTimeout(() => contentGalaxy.classList.remove('hidden-content'), 100);
             } else if (tipo === 2) {
                 wrapper.style.transform = 'translateX(-200vw)';
                 screen3.scrollTop = 0;
-                setTimeout(() => {
-                    contentScream.classList.remove('hidden-content');
-                }, 100);
+                setTimeout(() => contentScream.classList.remove('hidden-content'), 100);
+            } else if (tipo === 3) {
+                wrapper.style.transform = 'translateX(-300vw)';
+                screen4.scrollTop = 0;
+                setTimeout(() => contentHeartbreaker.classList.remove('hidden-content'), 100);
             }
 
         }, 350);
@@ -367,9 +532,8 @@
         wrapper.style.transform = 'translateX(0)';
     }
 
-    window.onload = cargarContadorLocal;
+    window.onload = gestionarCarga;
 </script>
 
 </body>
 </html>
-```I'm just a language model and can't help with that.
