@@ -20,9 +20,10 @@
             background: #ffffff;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             color: #000;
+            -webkit-font-smoothing: antialiased;
         }
 
-        /* Pantalla de carga negra por 2.5s */
+        /* PANTALLA DE CARGA OPTIMIZADA PARA APPS */
         #loading-screen {
             position: fixed;
             top: 0;
@@ -30,39 +31,39 @@
             width: 100vw;
             height: 100dvh;
             background: #000000;
-            z-index: 999;
+            z-index: 9999;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: opacity 0.4s ease-in-out;
+            opacity: 1;
+            transition: opacity 0.3s ease-out;
+            pointer-events: none; /* Evita bloqueos de clicks accidentales */
         }
 
         .loading-logo {
             width: 32vw; 
             max-width: 140px;
             height: auto;
-            opacity: 0;
-            transform: scale(0.9);
-            animation: smoothHeartbeat 2.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+            opacity: 1;
+            transform: scale(1);
+            /* Animación simplificada para no congelar hilos débiles en WebViews */
+            animation: appPulse 1.5s ease-in-out infinite;
             will-change: transform, opacity;
         }
 
-        @keyframes smoothHeartbeat {
-            0% { opacity: 0; transform: scale(0.9); }
-            20% { opacity: 0.4; transform: scale(0.94); }
-            35% { opacity: 1; transform: scale(1.06); }
-            50% { transform: scale(0.98); }
-            65% { transform: scale(1.01); }
-            75% { transform: scale(1); opacity: 1; }
-            100% { opacity: 1; transform: scale(1); }
+        @keyframes appPulse {
+            0% { transform: scale(1); opacity: 0.9; }
+            50% { transform: scale(1.04); opacity: 1; }
+            100% { transform: scale(1); opacity: 0.9; }
         }
 
-        /* Contenedor principal: Manejo por opacidad e intercambio directo de pantallas */
+        /* Contenedor principal optimizado por Hardware */
         #main-wrapper {
             position: relative;
             width: 100vw;
             height: 100dvh;
-            visibility: hidden;
+            opacity: 0;
+            transition: opacity 0.2s ease-in;
         }
 
         /* Estructura base de los contenedores */
@@ -79,8 +80,9 @@
             padding: calc(3vh + env(safe-area-inset-top)) 20px calc(2vh + env(safe-area-inset-bottom)) 20px;
             overflow: hidden; 
             background: #ffffff;
-            transform: translateX(0);
-            opacity: 1;
+            transform: translate3d(0,0,0);
+            backface-visibility: hidden;
+            will-change: transform, opacity;
         }
 
         /* Mostrar pantalla activa */
@@ -88,38 +90,26 @@
             display: flex;
         }
 
-        /* Doble animación: Desplazamiento izquierdo + Desvanecido (0.8s) al entrar */
+        /* Transición fluida nativa al entrar */
         .slide-fade-in {
             display: flex !important;
-            animation: slideFadeInKey 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+            animation: slideFadeInKey 0.5s cubic-bezier(0.1, 1, 0.1, 1) forwards;
         }
 
         /* Animación de retorno/salida hacia la derecha */
         .slide-out-right {
             display: flex !important;
-            animation: slideOutRightKey 0.6s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+            animation: slideOutRightKey 0.4s cubic-bezier(0.1, 1, 0.1, 1) forwards;
         }
 
         @keyframes slideFadeInKey {
-            from {
-                transform: translateX(100vw);
-                opacity: 0;
-            }
-            to {
-                transform: translateX(0);
-                opacity: 1;
-            }
+            from { transform: translate3d(100vw, 0, 0); opacity: 0; }
+            to { transform: translate3d(0, 0, 0); opacity: 1; }
         }
 
         @keyframes slideOutRightKey {
-            from {
-                transform: translateX(0);
-                opacity: 1;
-            }
-            to {
-                transform: translateX(100vw);
-                opacity: 0;
-            }
+            from { transform: translate3d(0, 0, 0); opacity: 1; }
+            to { transform: translate3d(100vw, 0, 0); opacity: 0; }
         }
 
         .header-section {
@@ -130,12 +120,10 @@
             flex-shrink: 0;
         }
 
-        /* ========================================================
-           PANTALLA DE INICIO (Ajustes de trazo fino y logo reducido)
-           ======================================================== */
+        /* PANTALLA DE INICIO */
         .home-title { 
             font-size: clamp(54px, 16vw, 75px); 
-            font-weight: 800; /* Trazo un poquitito más pequeño/fino */
+            font-weight: 800; 
             margin-bottom: 10px; 
             line-height: 0.85; 
             letter-spacing: -1.5px;
@@ -144,7 +132,7 @@
 
         .home-instruction {
             font-size: 11px; 
-            font-weight: 600; /* Trazo un poquitito más pequeño/fino */
+            font-weight: 600; 
             line-height: 1.5; 
             max-width: 320px; 
             text-transform: uppercase; 
@@ -154,7 +142,7 @@
         }
 
         .logo-large { 
-            width: 70vw; /* Un poquito más pequeño como se pidió */
+            width: 70vw; 
             max-width: 275px; 
             height: auto;
             margin: auto 0; 
@@ -168,12 +156,12 @@
             margin-bottom: 15px;
             display: block;
             margin-left: auto;
-            margin-right: auto; /* Perfectamente centrado y alineado */
+            margin-right: auto;
         }
 
         .footer-text-home { 
             font-size: 23px; 
-            font-weight: 800; /* Trazo un poquitito más pequeño/fino */
+            font-weight: 800; 
             margin-bottom: 6px; 
             letter-spacing: -0.3px;
             text-transform: uppercase;
@@ -181,15 +169,13 @@
 
         .footer-copyright-home { 
             font-size: 12px; 
-            font-weight: 700; /* Trazo un poquitito más pequeño/fino */
+            font-weight: 700; 
             text-transform: uppercase; 
             color: #616161; 
             letter-spacing: 0.2px;
         }
 
-        /* ========================================================
-           PANTALLAS DE PRODUCTOS (Se mantienen intactas)
-           ======================================================== */
+        /* PANTALLAS DE PRODUCTOS */
         .logo-img { 
             width: 65px; 
             height: auto; 
@@ -277,7 +263,6 @@
             letter-spacing: 0.1px;
         }
 
-        /* Botón atrás */
         .back-button { 
             position: absolute; 
             top: calc(15px + env(safe-area-inset-top)); 
@@ -293,7 +278,7 @@
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0, 0, 0, 0.92);
-            z-index: 100;
+            z-index: 1000;
             flex-direction: column;
             justify-content: flex-end;
             opacity: 0;
@@ -317,7 +302,6 @@
         .nfc-desc { font-size: 12px; opacity: 0.75; line-height: 1.4; max-width: 230px; margin: 0 auto; }
         .close-nfc { position: absolute; top: 15px; right: 20px; font-size: 22px; cursor: pointer; }
 
-        /* Contenedor y diseño de bolitas grandes y centradas */
         .dots-overlay {
             position: absolute;
             top: -70px; 
@@ -342,8 +326,8 @@
         .animate-dots .dot-1 { animation: crossRight 1.2s infinite ease-in-out; }
         .animate-dots .dot-2 { animation: crossLeft 1.2s infinite ease-in-out; }
 
-        @keyframes crossRight { 0%, 100% { transform: translateX(-55px); opacity: 0.2; } 50% { transform: translateX(55px); opacity: 1; } }
-        @keyframes crossLeft { 0%, 100% { transform: translateX(55px); opacity: 0.2; } 50% { transform: translateX(-55px); opacity: 1; } }
+        @keyframes crossRight { 0%, 100% { transform: translate3d(-55px,0,0); opacity: 0.2; } 50% { transform: translate3d(55px,0,0); opacity: 1; } }
+        @keyframes crossLeft { 0%, 100% { transform: translate3d(55px,0,0); opacity: 0.2; } 50% { transform: translate3d(-55px,0,0); opacity: 1; } }
     </style>
 </head>
 <body>
@@ -353,14 +337,13 @@
 </div>
 
 <div id="main-wrapper">
+    <!-- PANTALLA 1 -->
     <div class="container active" id="screen-1">
         <div class="header-section">
             <h1 class="home-title">VERIFY HAT</h1>
             <p class="home-instruction">TAP YOUR PHONE NEXT TO THE HAT TAG TO<br>AUTHENTICATE YOUR BARBAS PRODUCT</p>
         </div>
-        
         <img src="logo.png" class="logo-large">
-
         <div class="footer">
             <img src="verify.png" class="verify-btn-home" onclick="abrirNFC()">
             <div class="footer-text-home">QUIEN MÁS SI NO BARBAS?</div>
@@ -368,21 +351,19 @@
         </div>
     </div>
 
+    <!-- PANTALLA 2 -->
     <div class="container" id="screen-2">
         <div class="back-button" onclick="regresarAlInicio('screen-2')">
             <img src="exitt.png" class="exit-img" alt="Back">
         </div>
-
         <div class="header-section">
             <img src="logo.png" class="logo-img">
             <h1 class="brand-title">AUTHENTIC</h1>
             <div class="brand-subtitle">CT GALAXY</div>
         </div>
-
         <div class="product-container">
             <img src="gorra.jpeg" class="product-img">
         </div>
-
         <div class="footer-product">
             <div class="scan-label">TOTAL SCAN COUNT :</div>
             <div class="counter-group">
@@ -395,21 +376,19 @@
         </div>
     </div>
 
+    <!-- PANTALLA 3 -->
     <div class="container" id="screen-3">
         <div class="back-button" onclick="regresarAlInicio('screen-3')">
             <img src="exitt.png" class="exit-img" alt="Back">
         </div>
-
         <div class="header-section">
             <img src="logo.png" class="logo-img">
             <h1 class="brand-title">AUTHENTIC</h1>
             <div class="brand-subtitle">SCREAM</div>
         </div>
-
         <div class="product-container">
             <img src="gorra2.png" class="product-img">
         </div>
-
         <div class="footer-product">
             <div class="scan-label">TOTAL SCAN COUNT :</div>
             <div class="counter-group">
@@ -422,21 +401,19 @@
         </div>
     </div>
 
+    <!-- PANTALLA 4 -->
     <div class="container" id="screen-4">
         <div class="back-button" onclick="regresarAlInicio('screen-4')">
             <img src="exitt.png" class="exit-img" alt="Back">
         </div>
-
         <div class="header-section">
             <img src="logo.png" class="logo-img">
             <h1 class="brand-title">AUTHENTIC</h1>
             <div class="brand-subtitle">HEARTBREAKER</div>
         </div>
-
         <div class="product-container">
             <img src="gorra3.png" class="product-img">
         </div>
-
         <div class="footer-product">
             <div class="scan-label">TOTAL SCAN COUNT :</div>
             <div class="counter-group">
@@ -449,21 +426,19 @@
         </div>
     </div>
 
+    <!-- PANTALLA 5 -->
     <div class="container" id="screen-5">
         <div class="back-button" onclick="regresarAlInicio('screen-5')">
             <img src="exitt.png" class="exit-img" alt="Back">
         </div>
-
         <div class="header-section">
             <img src="logo.png" class="logo-img">
             <h1 class="brand-title">AUTHENTIC</h1>
             <div class="brand-subtitle">F.E.S</div>
         </div>
-
         <div class="product-container">
             <img src="gorra4.png" class="product-img">
         </div>
-
         <div class="footer-product">
             <div class="scan-label">TOTAL SCAN COUNT :</div>
             <div class="counter-group">
@@ -506,14 +481,19 @@
 
     let ndefController = null;
 
+    // Disparador de ejecución ultra-rápida nativa
     function gestionarCarga() {
         inicializarContadores();
-        // Quita la pantalla negra de inmediato con transicion suave en cuanto carga la app
-        loadingScreen.style.opacity = '0';
-        wrapper.style.visibility = 'visible';
-        setTimeout(() => {
-            loadingScreen.style.display = 'none';
-        }, 400);
+        
+        // requestAnimationFrame asegura que la app pinte el contenido antes de ocultar la carga
+        requestAnimationFrame(() => {
+            loadingScreen.style.opacity = '0';
+            wrapper.style.opacity = '1';
+            
+            setTimeout(() => {
+                loadingScreen.style.display = 'none';
+            }, 300);
+        });
     }
 
     function inicializarContadores() {
@@ -623,7 +603,7 @@
 
         setTimeout(() => {
             currentScreen.classList.remove('active', 'slide-out-right');
-        }, 550);
+        }, 450);
     }
 
     function cerrarNFC() {
@@ -635,11 +615,11 @@
         }, 350);
     }
 
-    // Corregido: Escucha global y segura del evento de carga nativa en navegadores web/móviles
-    if (document.readyState === "complete") {
+    // Ejecución segura al cargar completamente el DOM de la App wrapper
+    if (document.readyState === "complete" || document.readyState === "interactive") {
         gestionarCarga();
     } else {
-        window.addEventListener('load', gestionarCarga);
+        document.addEventListener("DOMContentLoaded", gestionarCarga);
     }
 </script>
 
