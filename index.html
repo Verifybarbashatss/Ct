@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>VERIFY AUTHENTIC</title>
+    <style>
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        
+        html, body {
+            height: 100dvh;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background: #ffffff;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            color: #000;
+        }
+
+        #main-wrapper {
+            display: flex;
+            width: 200vw;
+            height: 100dvh;
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .container {
+            width: 100vw;
+            height: 100dvh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            padding: 2vh 20px env(safe-area-inset-bottom);
+            box-sizing: border-box;
+            text-align: center;
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        #screen-2 {
+            overflow-y: auto;
+            display: block;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        /* ESTADO INICIAL PARA LA APARICIÓN SUAVE */
+        .content-scroll {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100%;
+            width: 100%;
+            opacity: 1; /* Por defecto visible */
+            transition: opacity 1.5s ease-in-out; /* Aparición gradual */
+        }
+
+        /* Clase para ocultar antes de la animación */
+        .hidden-content {
+            opacity: 0;
+        }
+
+        .logo-img { width: 80px; height: auto; margin-bottom: 2px; }
+        .logo-large { width: 85%; max-width: 260px; height: auto; margin: auto; }
+        .brand-title { font-size: clamp(32px, 9vw, 46px); font-weight: 900; letter-spacing: -1.2px; margin: 0; line-height: 0.85; }
+        .brand-subtitle { font-size: 13px; font-weight: 700; margin-top: 4px; }
+        .verify-btn { width: 270px; max-width: 80%; height: auto; cursor: pointer; flex-shrink: 0; }
+        
+        .footer { 
+            flex-shrink: 0; 
+            width: 100%; 
+            padding-bottom: 2vh; 
+            margin-top: -20px; 
+        }
+        
+        .footer-text { font-size: 13px; font-weight: 900; }
+        .footer-copyright { font-size: 7px; font-weight: 700; margin-top: 2px; text-transform: uppercase; }
+
+        .main-title-v1 { font-size: clamp(35px, 10vw, 50px); font-weight: 900; margin: 0; line-height: 1; }
+        .instruction-text { font-size: 12px; font-weight: 700; margin-top: 8px; line-height: 1.2; max-width: 280px; text-transform: uppercase; margin-left: auto; margin-right: auto; }
+
+        .back-button { position: absolute; top: 15px; left: 15px; cursor: pointer; z-index: 10; padding: 10px; }
+        
+        .product-img {
+            width: 100%;
+            max-width: 450px; 
+            max-height: 45vh; 
+            object-fit: contain;
+            margin: 10px 0;
+            transform: scale(1.1);
+        }
+
+        .scan-label { font-size: 11px; font-weight: 600; letter-spacing: 0.5px; margin-bottom: 2px; }
+        .counter-group { font-size: 28px; font-weight: 700; margin-bottom: 8px; display: flex; justify-content: center; gap: 6px; }
+
+        #nfc-screen {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 100;
+            flex-direction: column;
+            justify-content: flex-end;
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+        }
+
+        .nfc-modal {
+            background: #000000;
+            width: 92%;
+            margin: 0 auto 20px auto;
+            border-radius: 30px;
+            border: 1px solid #a0a0a0;
+            padding: 40px 20px;
+            text-align: center;
+            position: relative;
+            color: white;
+        }
+
+        .nfc-icon-img { width: 90px; height: auto; margin-bottom: 20px; margin-left: auto; margin-right: auto; display: block; }
+        .nfc-ready { font-size: 22px; font-weight: 600; margin-bottom: 10px; }
+        .nfc-desc { font-size: 13px; opacity: 0.75; line-height: 1.4; max-width: 240px; margin: 0 auto; }
+        .close-nfc { position: absolute; top: 20px; right: 25px; font-size: 24px; cursor: pointer; }
+
+        .dots-overlay {
+            position: absolute;
+            top: -60px; left: 50%;
+            transform: translateX(-50%);
+            width: 140px; height: 40px;
+            display: flex; align-items: center; justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .dot { width: 28px; height: 28px; background-color: #ffffff; border-radius: 50%; position: absolute; }
+        .animate-dots { opacity: 1; }
+        .animate-dots .dot-1 { animation: crossRight 1.5s infinite ease-in-out; }
+        .animate-dots .dot-2 { animation: crossLeft 1.5s infinite ease-in-out; }
+
+        @keyframes crossRight { 0%, 100% { transform: translateX(-40px); opacity: 0.3; } 50% { transform: translateX(40px); opacity: 1; } }
+        @keyframes crossLeft { 0%, 100% { transform: translateX(40px); opacity: 0.3; } 50% { transform: translateX(-40px); opacity: 1; } }
+    </style>
+</head>
+<body>
+
+<div id="main-wrapper">
+    <div class="container">
+        <div class="header-section" style="margin-top: 2vh;">
+            <h1 class="main-title-v1">VERIFY HAT</h1>
+            <p class="instruction-text">TAP YOUR PHONE NEXT TO THE HAT TAG TO AUTHENTICATE YOUR BARBAS PRODUCT</p>
+        </div>
+        
+        <img src="logo.png" class="logo-large">
+
+        <div class="footer" style="margin-top: 0;">
+            <img src="verify.png" class="verify-btn" onclick="abrirNFC()" style="margin-bottom: 2vh;">
+            <div class="footer-text">QUIEN MÁS SI NO BARBAS?</div>
+            <div class="footer-copyright">© 2025 EL BARBAS HATS. ALL RIGHTS RESERVED.</div>
+        </div>
+    </div>
+
+    <div class="container" id="screen-2">
+        <div class="content-scroll" id="content-to-fade">
+            <div class="back-button" onclick="irAInicio()">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2.5">
+                    <line x1="19" y1="12" x2="5" y2="12"></line>
+                    <polyline points="12 19 5 12 12 5"></polyline>
+                </svg>
+            </div>
+
+            <div class="header-section" style="margin-top: 2vh;">
+                <img src="logo.png" class="logo-img">
+                <h1 class="brand-title">AUTHENTIC</h1>
+                <div class="brand-subtitle">CT GALAXY</div>
+            </div>
+
+            <img src="gorra.jpeg" class="product-img">
+
+            <div class="footer">
+                <div class="scan-label">TOTAL SCAN COUNT :</div>
+                <div class="counter-group">
+                    <span id="num">1</span>
+                    <span>SCANS</span>
+                </div>
+                <img src="verify.png" class="verify-btn" style="cursor: default; margin-bottom: 1vh; margin-top: -10px;">
+                <div class="footer-text">QUIEN MÁS SI NO BARBAS?</div>
+                <div class="footer-copyright">© 2025 EL BARBAS HATS. ALL RIGHTS RESERVED.</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="nfc-screen">
+    <div class="nfc-modal">
+        <div class="close-nfc" onclick="cerrarNFC()">✕</div>
+        <div id="dots-container" class="dots-overlay">
+            <div class="dot dot-1"></div>
+            <div class="dot dot-2"></div>
+        </div>
+        <img src="nfc.png" class="nfc-icon-img">
+        <div class="nfc-ready" id="nfc-status-text">Ready to scan</div>
+        <div class="nfc-desc">Reader is located along the middle of the backside of your phone</div>
+    </div>
+</div>
+
+<script>
+    const wrapper = document.getElementById('main-wrapper');
+    const nfcScreen = document.getElementById('nfc-screen');
+    const dotsContainer = document.getElementById('dots-container');
+    const numDisplay = document.getElementById("num");
+    const screen2 = document.getElementById('screen-2');
+    const contentToFade = document.getElementById('content-to-fade');
+    const nfcStatusText = document.getElementById('nfc-status-text');
+
+    const storageKey = "b82728"; 
+    let ndefController = null;
+
+    function cargarContadorLocal() {
+        const val = localStorage.getItem(storageKey);
+        numDisplay.innerText = (val && !isNaN(val)) ? val : "1";
+    }
+
+    function incrementarContadorLocal() {
+        let actual = parseInt(numDisplay.innerText) || 1;
+        let nuevo = actual + 1;
+        numDisplay.innerText = nuevo;
+        localStorage.setItem(storageKey, nuevo);
+    }
+
+    async function abrirNFC() {
+        // Ocultamos el contenido de la pantalla 2 preventivamente
+        contentToFade.classList.add('hidden-content');
+
+        // Mostramos el modal de escaneo indefinidamente
+        nfcScreen.style.display = 'flex';
+        setTimeout(() => nfcScreen.style.opacity = '1', 10);
+        setTimeout(() => dotsContainer.classList.add('animate-dots'), 500);
+        nfcStatusText.innerText = "Ready to scan";
+
+        // Inicializamos el hardware de lectura NFC del navegador (WebNFC)
+        if ('NDEFReader' in window) {
+            try {
+                ndefController = new AbortController();
+                const ndef = new NDEFReader();
+                await ndef.scan({ signal: ndefController.signal });
+                
+                ndef.onreading = event => {
+                    const decoder = new TextDecoder();
+                    for (const record of event.message.records) {
+                        const textoEscaneado = decoder.decode(record.data).trim();
+                        
+                        // Evalúa estrictamente que el valor del tag sea exactamente "1"
+                        if (textoEscaneado === "1") {
+                            window.activarPantallaGalaxy();
+                            break;
+                        } else {
+                            nfcStatusText.innerText = "Invalid Tag Data";
+                        }
+                    }
+                };
+
+                ndef.onreadingerror = () => {
+                    nfcStatusText.innerText = "Read Error. Try Again.";
+                };
+
+            } catch (error) {
+                console.log("WebNFC a la espera de lectura o puente nativo.");
+            }
+        }
+    }
+
+    // FUNCIÓN GLOBAL: Rompe el bucle de espera y avanza a la pantalla 2.
+    // Puede ser invocada de manera interna por WebNFC o externamente por tu aplicación contenedora.
+    window.activarPantallaGalaxy = function() {
+        if (ndefController) {
+            ndefController.abort(); // Apaga el hilo del lector si estaba activo
+        }
+        
+        nfcScreen.style.opacity = '0';
+        setTimeout(() => {
+            nfcScreen.style.display = 'none';
+            dotsContainer.classList.remove('animate-dots');
+            
+            // Transición a la interfaz de CT GALAXY
+            wrapper.style.transform = 'translateX(-100vw)';
+            screen2.scrollTop = 0;
+            incrementarContadorLocal();
+
+            setTimeout(() => {
+                contentToFade.classList.remove('hidden-content');
+            }, 100);
+
+        }, 350);
+    };
+
+    function cerrarNFC() {
+        if (ndefController) {
+            ndefController.abort();
+        }
+        nfcScreen.style.opacity = '0';
+        setTimeout(() => {
+            nfcScreen.style.display = 'none';
+            dotsContainer.classList.remove('animate-dots');
+        }, 350);
+    }
+
+    function irAInicio() {
+        wrapper.style.transform = 'translateX(0)';
+    }
+
+    window.onload = cargarContadorLocal;
+</script>
+
+</body>
+</html>
