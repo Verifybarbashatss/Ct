@@ -508,13 +508,12 @@
 
     function gestionarCarga() {
         inicializarContadores();
+        // Quita la pantalla negra de inmediato con transicion suave en cuanto carga la app
+        loadingScreen.style.opacity = '0';
+        wrapper.style.visibility = 'visible';
         setTimeout(() => {
-            loadingScreen.style.opacity = '0';
-            wrapper.style.visibility = 'visible';
-            setTimeout(() => {
-                loadingScreen.style.display = 'none';
-            }, 400);
-        }, 2500);
+            loadingScreen.style.display = 'none';
+        }, 400);
     }
 
     function inicializarContadores() {
@@ -636,7 +635,12 @@
         }, 350);
     }
 
-    window.onload = gestionarCarga;
+    // Corregido: Escucha global y segura del evento de carga nativa en navegadores web/móviles
+    if (document.readyState === "complete") {
+        gestionarCarga();
+    } else {
+        window.addEventListener('load', gestionarCarga);
+    }
 </script>
 
 </body>
