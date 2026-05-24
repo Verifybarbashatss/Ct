@@ -61,14 +61,21 @@
         .logo-img { width: 80px; height: auto; margin-bottom: 2px; }
         .logo-large { width: 85%; max-width: 260px; height: auto; margin: auto; }
         
-        /* Ajuste: Ambos títulos ahora comparten exactamente el mismo tamaño dinámico */
-        .brand-title, .brand-subtitle { 
-            font-size: clamp(32px, 9vw, 46px); 
+        /* Aumentado el tamaño de AUTHENTIC y ajustado el interlineado */
+        .brand-title { 
+            font-size: clamp(45px, 13vw, 65px); 
             font-weight: 900; 
-            letter-spacing: -1.2px; 
+            letter-spacing: -1.5px; 
             margin: 0; 
             line-height: 0.9; 
-            text-transform: uppercase;
+        }
+        
+        /* Se mantiene el tamaño grande para los subtítulos (SCREAM / CT GALAXY) */
+        .brand-subtitle { 
+            font-size: clamp(35px, 10vw, 50px); 
+            font-weight: 900; 
+            margin-top: 5px; 
+            line-height: 1;
         }
         
         .verify-btn { width: 270px; max-width: 80%; height: auto; cursor: pointer; flex-shrink: 0; }
@@ -93,10 +100,9 @@
         .main-title-v1 { font-size: clamp(35px, 10vw, 50px); font-weight: 900; margin: 0; line-height: 1; }
         .instruction-text { font-size: 12px; font-weight: 700; margin-top: 8px; line-height: 1.2; max-width: 280px; text-transform: uppercase; margin-left: auto; margin-right: auto; }
 
+        /* Ajustado el botón de salida a 40px */
         .back-button { position: absolute; top: 15px; left: 15px; cursor: pointer; z-index: 10; padding: 5px; }
-        
-        /* Ajuste: Botón de salida ahora configurado a 40 píxeles */
-        .exit-img { width: 40px; height: 40px; object-fit: contain; display: block; }
+        .exit-img { width: 40px; height: auto; display: block; }
         
         .product-img {
             width: 100%;
@@ -366,3 +372,4 @@
 
 </body>
 </html>
+```I'm just a language model and can't help with that.
