@@ -5,12 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>VERIFY AUTHENTIC</title>
     <style>
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        /* Bloqueo total de scroll y reinicio de estilos */
+        * { 
+            box-sizing: border-box; 
+            -webkit-tap-highlight-color: transparent; 
+            margin: 0;
+            padding: 0;
+        }
         
         html, body {
             height: 100dvh;
-            margin: 0;
-            padding: 0;
+            width: 100vw;
             overflow: hidden;
             background: #ffffff;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
@@ -32,48 +37,27 @@
             transition: opacity 0.4s ease-in-out;
         }
 
-        /* logoo.png - Animación ultra fluida de latido sin saltos de fotogramas */
         .loading-logo {
-            width: 40vw; 
-            max-width: 160px;
+            width: 32vw; 
+            max-width: 140px;
             height: auto;
             opacity: 0;
             transform: scale(0.9);
-            /* Se aplica una curva bezier de aceleración/desaceleración suave (renderizado a 60fps+ nativos) */
             animation: smoothHeartbeat 2.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-            will-change: transform, opacity; /* Optimización de hardware para evitar trabas */
+            will-change: transform, opacity;
         }
 
-        /* Replicación corregida: Transición de escala progresiva y limpia */
         @keyframes smoothHeartbeat {
-            0% {
-                opacity: 0;
-                transform: scale(0.9);
-            }
-            20% {
-                opacity: 0.4;
-                transform: scale(0.94);
-            }
-            35% {
-                opacity: 1;
-                transform: scale(1.06); /* Pulso principal */
-            }
-            50% {
-                transform: scale(0.98); /* Retorno orgánico lento */
-            }
-            65% {
-                transform: scale(1.01); /* Micro-pulso de estabilización */
-            }
-            75% {
-                transform: scale(1);
-                opacity: 1;
-            }
-            100% {
-                opacity: 1;
-                transform: scale(1);
-            }
+            0% { opacity: 0; transform: scale(0.9); }
+            20% { opacity: 0.4; transform: scale(0.94); }
+            35% { opacity: 1; transform: scale(1.06); }
+            50% { transform: scale(0.98); }
+            65% { transform: scale(1.01); }
+            75% { transform: scale(1); opacity: 1; }
+            100% { opacity: 1; transform: scale(1); }
         }
 
+        /* Contenedor deslizante horizontal para las páginas */
         #main-wrapper {
             display: flex;
             width: 400vw;
@@ -82,135 +66,154 @@
             visibility: hidden;
         }
 
+        /* Estructura fija para que TODO quepa sin hacer scroll */
         .container {
             width: 100vw;
             height: 100dvh;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: flex-start;
-            padding: 6vh 24px env(safe-area-inset-bottom);
-            box-sizing: border-box;
-            text-align: center;
+            justify-content: space-between; /* Distribuye el contenido perfectamente de arriba a abajo */
+            padding: calc(2vh + env(safe-area-inset-top)) 20px calc(2vh + env(safe-area-inset-bottom)) 20px;
+            flex-shrink: 0;
+            overflow: hidden; /* Evita que aparezca barra de scroll */
             position: relative;
+        }
+
+        /* Secciones internas con tamaños proporcionales */
+        .header-section {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
             flex-shrink: 0;
         }
 
-        .scrollable-screen {
-            overflow-y: auto;
-            display: block;
-            -webkit-overflow-scrolling: touch;
-        }
-
-        .content-scroll {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 100%;
-            width: 100%;
-            opacity: 1;
-            transition: opacity 1.5s ease-in-out;
-        }
-
-        .hidden-content {
-            opacity: 0;
-        }
-
-        .header-section {
-            margin-top: 0;
-            width: 100%;
-            margin-bottom: 4vh;
-        }
-
+        /* Título VERIFY HAT más grande y limpio */
         .main-title-v1 { 
-            font-size: clamp(44px, 13vw, 58px); 
+            font-size: clamp(46px, 14vw, 62px); 
             font-weight: 900; 
-            margin: 0 0 10px 0; 
+            margin-bottom: 8px; 
             line-height: 0.9; 
-            letter-spacing: -0.5px;
+            letter-spacing: -1px;
         }
 
         .instruction-text { 
-            font-size: 11px; 
+            font-size: 10px; 
             font-weight: 700; 
-            line-height: 1.3; 
-            max-width: 290px; 
+            line-height: 1.4; 
+            max-width: 300px; 
             text-transform: uppercase; 
-            margin: 0 auto; 
-            letter-spacing: 0.2px;
+            letter-spacing: 0.3px;
         }
         
+        /* Logo principal en Home ajustado */
         .logo-large { 
-            width: 72vw; 
-            max-width: 280px; 
-            height: auto; 
-            margin-bottom: 4vh; 
+            width: 68vw; 
+            max-width: 260px; 
+            height: auto;
+            margin: auto 0; /* Centrado vertical perfecto en el espacio restante */
         }
 
+        /* ZONA DE PRODUCTOS: Ajustes idénticos a las capturas proporcionadas */
+        .logo-img { 
+            width: 65px; 
+            height: auto; 
+            margin-bottom: 5px; 
+        }
+
+        /* AUTHENTIC Gigante como en la foto */
+        .brand-title { 
+            font-size: clamp(52px, 15vw, 72px); 
+            font-weight: 900; 
+            letter-spacing: -1.5px; 
+            line-height: 0.85; 
+            text-transform: uppercase; 
+        }
+
+        .brand-subtitle { 
+            font-size: clamp(22px, 6vw, 28px); 
+            font-weight: 800; 
+            margin-top: 2px; 
+            text-transform: uppercase; 
+            letter-spacing: -0.5px;
+        }
+
+        /* Contenedor e imagen de la Gorra centrada y contenida */
+        .product-container {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            min-height: 0; /* Permite que el contenedor se encoja si la pantalla es enana */
+        }
+
+        .product-img {
+            max-width: 90%;
+            max-height: 38vh; /* Protege el espacio para evitar empujar el footer hacia abajo */
+            object-fit: contain;
+        }
+
+        /* Footer unificado y compacto */
         .footer { 
-            flex-shrink: 0; 
-            width: 100%; 
-            margin-top: auto; 
-            margin-bottom: 2vh;
+            width: 100%;
             display: flex;
             flex-direction: column;
             align-items: center;
+            flex-shrink: 0;
+        }
+
+        .scan-label { 
+            font-size: 11px; 
+            font-weight: 700; 
+            letter-spacing: 0.5px; 
+            margin-bottom: 2px;
+            color: #000;
+        }
+
+        .counter-group { 
+            font-size: 24px; 
+            font-weight: 800; 
+            margin-bottom: 10px; 
+            display: flex; 
+            justify-content: center; 
+            gap: 5px; 
         }
         
         .verify-btn { 
-            width: 280px; 
-            max-width: 85%; 
+            width: 260px; 
+            max-width: 80%; 
             height: auto; 
             cursor: pointer; 
-            flex-shrink: 0; 
-            margin-bottom: 24px;
-            transform: scaleY(1.12);
+            margin-bottom: 12px;
         }
 
         .footer-text { 
-            font-size: 19px; 
+            font-size: 17px; 
             font-weight: 800; 
-            color: #000000; 
-            margin: 0 0 6px 0; 
+            margin-bottom: 4px; 
             letter-spacing: -0.2px;
             text-transform: uppercase;
         }
 
         .footer-copyright { 
-            font-size: 11px; 
+            font-size: 9px; 
             font-weight: 700; 
             text-transform: uppercase; 
             color: #8a8a8a; 
-            margin: 0;
             letter-spacing: 0.1px;
         }
 
-        /* Estilos de las Pantallas de Producto */
-        .logo-img { width: 80px; height: auto; margin-bottom: 2px; }
-        .brand-title { font-size: clamp(45px, 12vw, 65px); font-weight: 900; letter-spacing: -1.2px; margin: 0; line-height: 0.85; text-transform: uppercase; }
-        .brand-subtitle { font-size: clamp(24px, 6vw, 32px); font-weight: 700; margin-top: 8px; text-transform: uppercase; }
-        
-        .title-img-footer {
-            width: 90%;
-            max-width: 320px;
-            height: auto;
-            margin-top: 5px;
+        /* Botón de salida */
+        .back-button { 
+            position: absolute; 
+            top: calc(15px + env(safe-area-inset-top)); 
+            left: 15px; 
+            cursor: pointer; 
+            z-index: 10; 
         }
-
-        .back-button { position: absolute; top: 15px; left: 15px; cursor: pointer; z-index: 10; padding: 5px; }
-        .exit-img { width: 40px; height: 40px; object-fit: contain; display: block; }
-        
-        .product-img {
-            width: 100%;
-            max-width: 450px; 
-            max-height: 45vh; 
-            object-fit: contain;
-            margin: 10px 0;
-            transform: scale(1.1);
-        }
-
-        .scan-label { font-size: 11px; font-weight: 600; letter-spacing: 0.5px; margin-bottom: 2px; }
-        .counter-group { font-size: 28px; font-weight: 700; margin-bottom: 8px; display: flex; justify-content: center; gap: 6px; }
+        .exit-img { width: 36px; height: 36px; object-fit: contain; }
 
         /* Modal NFC */
         #nfc-screen {
@@ -228,19 +231,19 @@
         .nfc-modal {
             background: #000000;
             width: 92%;
-            margin: 0 auto 20px auto;
+            margin: 0 auto calc(20px + env(safe-area-inset-bottom)) auto;
             border-radius: 30px;
             border: 1px solid #a0a0a0;
-            padding: 40px 20px;
+            padding: 35px 20px;
             text-align: center;
             position: relative;
             color: white;
         }
 
-        .nfc-icon-img { width: 90px; height: auto; margin-bottom: 20px; margin-left: auto; margin-right: auto; display: block; }
-        .nfc-ready { font-size: 22px; font-weight: 600; margin-bottom: 10px; }
-        .nfc-desc { font-size: 13px; opacity: 0.75; line-height: 1.4; max-width: 240px; margin: 0 auto; }
-        .close-nfc { position: absolute; top: 20px; right: 25px; font-size: 24px; cursor: pointer; }
+        .nfc-icon-img { width: 80px; height: auto; margin-bottom: 15px; margin-left: auto; margin-right: auto; display: block; }
+        .nfc-ready { font-size: 20px; font-weight: 600; margin-bottom: 8px; }
+        .nfc-desc { font-size: 12px; opacity: 0.75; line-height: 1.4; max-width: 230px; margin: 0 auto; }
+        .close-nfc { position: absolute; top: 15px; right: 20px; font-size: 22px; cursor: pointer; }
 
         .dots-overlay {
             position: absolute;
@@ -251,7 +254,7 @@
             opacity: 0;
             transition: opacity 0.3s ease;
         }
-        .dot { width: 28px; height: 28px; background-color: #ffffff; border-radius: 50%; position: absolute; }
+        .dot { width: 24px; height: 24px; background-color: #ffffff; border-radius: 50%; position: absolute; }
         .animate-dots { opacity: 1; }
         .animate-dots .dot-1 { animation: crossRight 1.5s infinite ease-in-out; }
         .animate-dots .dot-2 { animation: crossLeft 1.5s infinite ease-in-out; }
@@ -282,81 +285,84 @@
         </div>
     </div>
 
-    <div class="container scrollable-screen" id="screen-2">
-        <div class="content-scroll" id="content-galaxy">
-            <div class="back-button" onclick="irAInicio()">
-                <img src="exitt.png" class="exit-img" alt="Back">
-            </div>
+    <div class="container" id="screen-2">
+        <div class="back-button" onclick="irAInicio()">
+            <img src="exitt.png" class="exit-img" alt="Back">
+        </div>
 
-            <div class="header-section" style="margin-top: 2vh;">
-                <img src="logo.png" class="logo-img">
-                <h1 class="brand-title">AUTHENTIC</h1>
-                <div class="brand-subtitle">CT GALAXY</div>
-            </div>
+        <div class="header-section">
+            <img src="logo.png" class="logo-img">
+            <h1 class="brand-title">AUTHENTIC</h1>
+            <div class="brand-subtitle">CT GALAXY</div>
+        </div>
 
+        <div class="product-container">
             <img src="gorra.jpeg" class="product-img">
+        </div>
 
-            <div class="footer">
-                <div class="scan-label">TOTAL SCAN COUNT :</div>
-                <div class="counter-group">
-                    <span class="num-counter" id="count-galaxy">1</span>
-                    <span>SCANS</span>
-                </div>
-                <img src="verify.png" class="verify-btn" style="cursor: default; margin-bottom: 1vh; margin-top: -10px;">
-                <img src="tittle.png" class="title-img-footer" alt="El Barbas Hats">
+        <div class="footer">
+            <div class="scan-label">TOTAL SCAN COUNT :</div>
+            <div class="counter-group">
+                <span id="count-galaxy">1</span>
+                <span>SCANS</span>
             </div>
+            <img src="verify.png" class="verify-btn" style="cursor: default;">
+            <div class="footer-text">QUIEN MÁS SI NO BARBAS?</div>
+            <div class="footer-copyright">© 2025 EL BARBAS HATS. ALL RIGHTS RESERVED.</div>
         </div>
     </div>
 
-    <div class="container scrollable-screen" id="screen-3">
-        <div class="content-scroll" id="content-scream">
-            <div class="back-button" onclick="irAInicio()">
-                <img src="exitt.png" class="exit-img" alt="Back">
-            </div>
+    <div class="container" id="screen-3">
+        <div class="back-button" onclick="irAInicio()">
+            <img src="exitt.png" class="exit-img" alt="Back">
+        </div>
 
-            <div class="header-section" style="margin-top: 2vh;">
-                <img src="logo.png" class="logo-img">
-                <h1 class="brand-title">AUTHENTIC</h1>
-                <div class="brand-subtitle">SCREAM</div>
-            </div>
+        <div class="header-section">
+            <img src="logo.png" class="logo-img">
+            <h1 class="brand-title">AUTHENTIC</h1>
+            <div class="brand-subtitle">SCREAM</div>
+        </div>
 
+        <div class="product-container">
             <img src="gorra2.png" class="product-img">
+        </div>
 
-            <div class="footer">
-                <div class="scan-label">TOTAL SCAN COUNT :</div>
-                <div class="counter-group">
-                    <span class="num-counter" id="count-scream">1</span>
-                    <span>SCANS</span>
-                </div>
-                <img src="verify.png" class="verify-btn" style="cursor: default; margin-bottom: 1vh; margin-top: -10px;">
-                <img src="tittle.png" class="title-img-footer" alt="El Barbas Hats">
+        <div class="footer">
+            <div class="scan-label">TOTAL SCAN COUNT :</div>
+            <div class="counter-group">
+                <span id="count-scream">1</span>
+                <span>SCANS</span>
             </div>
+            <img src="verify.png" class="verify-btn" style="cursor: default;">
+            <div class="footer-text">QUIEN MÁS SI NO BARBAS?</div>
+            <div class="footer-copyright">© 2025 EL BARBAS HATS. ALL RIGHTS RESERVED.</div>
         </div>
     </div>
 
-    <div class="container scrollable-screen" id="screen-4">
-        <div class="content-scroll" id="content-heartbreaker">
-            <div class="back-button" onclick="irAInicio()">
-                <img src="exitt.png" class="exit-img" alt="Back">
-            </div>
+    <div class="container" id="screen-4">
+        <div class="back-button" onclick="irAInicio()">
+            <img src="exitt.png" class="exit-img" alt="Back">
+        </div>
 
-            <div class="header-section" style="margin-top: 2vh;">
-                <img src="logo.png" class="logo-img">
-                <h1 class="brand-title">AUTHENTIC</h1>
-                <div class="brand-subtitle">HEARTBREAKER</div>
-            </div>
+        <div class="header-section">
+            <img src="logo.png" class="logo-img">
+            <h1 class="brand-title">AUTHENTIC</h1>
+            <div class="brand-subtitle">HEARTBREAKER</div>
+        </div>
 
+        <div class="product-container">
             <img src="gorra3.png" class="product-img">
+        </div>
 
-            <div class="footer">
-                <div class="scan-label">TOTAL SCAN COUNT :</div>
-                <div class="counter-group">
-                    <span class="num-counter" id="count-heartbreaker">1</span>
-                    <span>SCANS</span>
-                </div>
-                <img src="verify.png" class="verify-btn" style="cursor: default; margin-bottom: 1vh; margin-top: -10px;">
-                <img src="tittle.png" class="title-img-footer" alt="El Barbas Hats">
+        <div class="footer">
+            <div class="scan-label">TOTAL SCAN COUNT :</div>
+            <div class="counter-group">
+                <span id="count-heartbreaker">1</span>
+                <span>SCANS</span>
             </div>
+            <img src="verify.png" class="verify-btn" style="cursor: default;">
+            <div class="footer-text">QUIEN MÁS SI NO BARBAS?</div>
+            <div class="footer-copyright">© 2025 EL BARBAS HATS. ALL RIGHTS RESERVED.</div>
         </div>
     </div>
 </div>
@@ -379,13 +385,6 @@
     const nfcScreen = document.getElementById('nfc-screen');
     const dotsContainer = document.getElementById('dots-container');
     const loadingScreen = document.getElementById('loading-screen');
-    
-    const screen2 = document.getElementById('screen-2');
-    const screen3 = document.getElementById('screen-3');
-    const screen4 = document.getElementById('screen-4');
-    const contentGalaxy = document.getElementById('content-galaxy');
-    const contentScream = document.getElementById('content-scream');
-    const contentHeartbreaker = document.getElementById('content-heartbreaker');
     const nfcStatusText = document.getElementById('nfc-status-text');
 
     const keys = {
@@ -398,7 +397,6 @@
 
     function gestionarCarga() {
         inicializarContadores();
-        
         setTimeout(() => {
             loadingScreen.style.opacity = '0';
             wrapper.style.visibility = 'visible';
@@ -424,11 +422,7 @@
 
     function incrementarContador(tipo) {
         const key = keys[tipo];
-        let elemento;
-        
-        if (tipo === 1) elemento = document.getElementById("count-galaxy");
-        else if (tipo === 2) elemento = document.getElementById("count-scream");
-        else if (tipo === 3) elemento = document.getElementById("count-heartbreaker");
+        let elemento = document.getElementById(tipo === 1 ? "count-galaxy" : tipo === 2 ? "count-scream" : "count-heartbreaker");
 
         let actual = parseInt(localStorage.getItem(key)) || 1;
         let nuevo = actual + 1;
@@ -438,12 +432,7 @@
     }
 
     async function abrirNFC() {
-        contentGalaxy.classList.add('hidden-content');
-        contentScream.classList.add('hidden-content');
-        contentHeartbreaker.classList.add('hidden-content');
-        
         dotsContainer.classList.remove('animate-dots');
-
         nfcScreen.style.display = 'flex';
         setTimeout(() => nfcScreen.style.opacity = '1', 10);
         nfcStatusText.innerText = "Ready to scan";
@@ -456,76 +445,48 @@
                 
                 ndef.onreading = event => {
                     dotsContainer.classList.add('animate-dots');
-                    
                     const decoder = new TextDecoder();
                     for (const record of event.message.records) {
                         const textoEscaneado = decoder.decode(record.data).trim();
                         
-                        if (textoEscaneado.includes("1")) {
-                            window.activarPantalla(1);
-                            break;
-                        } else if (textoEscaneado.includes("2")) {
-                            window.activarPantalla(2);
-                            break;
-                        } else if (textoEscaneado.includes("3")) {
-                            window.activarPantalla(3);
-                            break;
-                        } else {
+                        if (textoEscaneado.includes("1")) { window.activarPantalla(1); break; }
+                        else if (textoEscaneado.includes("2")) { window.activarPantalla(2); break; }
+                        else if (textoEscaneado.includes("3")) { window.activarPantalla(3); break; }
+                        else {
                             nfcStatusText.innerText = "Invalid Tag Data";
                             dotsContainer.classList.remove('animate-dots');
                         }
                     }
                 };
-
                 ndef.onreadingerror = () => {
                     nfcStatusText.innerText = "Read Error. Try Again.";
                     dotsContainer.classList.remove('animate-dots');
                 };
-
             } catch (error) {
-                console.log("WebNFC listo.");
+                console.log("WebNFC inicializado.");
             }
         }
     }
 
     window.activarPantalla = function(tipo) {
-        if (ndefController) {
-            ndefController.abort();
-        }
+        if (ndefController) ndefController.abort();
         
         nfcScreen.style.opacity = '0';
         setTimeout(() => {
             nfcScreen.style.display = 'none';
             dotsContainer.classList.remove('animate-dots');
-            
             incrementarContador(tipo);
 
-            if (tipo === 1) {
-                wrapper.style.transform = 'translateX(-100vw)';
-                screen2.scrollTop = 0;
-                setTimeout(() => contentGalaxy.classList.remove('hidden-content'), 100);
-            } else if (tipo === 2) {
-                wrapper.style.transform = 'translateX(-200vw)';
-                screen3.scrollTop = 0;
-                setTimeout(() => contentScream.classList.remove('hidden-content'), 100);
-            } else if (tipo === 3) {
-                wrapper.style.transform = 'translateX(-300vw)';
-                screen4.scrollTop = 0;
-                setTimeout(() => contentHeartbreaker.classList.remove('hidden-content'), 100);
-            }
-
+            if (tipo === 1) wrapper.style.transform = 'translateX(-100vw)';
+            else if (tipo === 2) wrapper.style.transform = 'translateX(-200vw)';
+            else if (tipo === 3) wrapper.style.transform = 'translateX(-300vw)';
         }, 350);
     };
 
     function cerrarNFC() {
-        if (ndefController) {
-            ndefController.abort();
-        }
+        if (ndefController) ndefController.abort();
         nfcScreen.style.opacity = '0';
-        setTimeout(() => {
-            nfcScreen.style.display = 'none';
-            dotsContainer.classList.remove('animate-dots');
-        }, 350);
+        setTimeout(() => { nfcScreen.style.display = 'none'; }, 350);
     }
 
     function irAInicio() {
