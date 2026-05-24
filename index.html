@@ -17,7 +17,6 @@
             color: #000;
         }
 
-        /* Se cambia el ancho a 300vw para soportar las 3 pantallas */
         #main-wrapper {
             display: flex;
             width: 300vw;
@@ -264,10 +263,12 @@
     async function abrirNFC() {
         contentGalaxy.classList.add('hidden-content');
         contentScream.classList.add('hidden-content');
+        
+        // Limpiamos la animación previa para asegurarnos de que NO se muevan al abrir el modal
+        dotsContainer.classList.remove('animate-dots');
 
         nfcScreen.style.display = 'flex';
         setTimeout(() => nfcScreen.style.opacity = '1', 10);
-        setTimeout(() => dotsContainer.classList.add('animate-dots'), 500);
         nfcStatusText.innerText = "Ready to scan";
 
         if ('NDEFReader' in window) {
@@ -277,24 +278,30 @@
                 await ndef.scan({ signal: ndefController.signal });
                 
                 ndef.onreading = event => {
+                    // Activamos la animación de las bolitas ÚNICAMENTE cuando detecta la lectura física
+                    dotsContainer.classList.add('animate-dots');
+                    
                     const decoder = new TextDecoder();
                     for (const record of event.message.records) {
                         const textoEscaneado = decoder.decode(record.data).trim();
                         
-                        if (textoEscaneado === "1") {
+                        // .includes() corrige el prefijo de idioma oculto generado por NFC Tools (ej: "en1", "es2")
+                        if (textoEscaneado.includes("1")) {
                             window.activarPantalla(1);
                             break;
-                        } else if (textoEscaneado === "2") {
+                        } else if (textoEscaneado.includes("2")) {
                             window.activarPantalla(2);
                             break;
                         } else {
                             nfcStatusText.innerText = "Invalid Tag Data";
+                            dotsContainer.classList.remove('animate-dots');
                         }
                     }
                 };
 
                 ndef.onreadingerror = () => {
                     nfcStatusText.innerText = "Read Error. Try Again.";
+                    dotsContainer.classList.remove('animate-dots');
                 };
 
             } catch (error) {
@@ -303,7 +310,6 @@
         }
     }
 
-    // El parámetro 'tipo' define a dónde se desplaza: 1 para CT GALAXY, 2 para SCREAM
     window.activarPantalla = function(tipo) {
         if (ndefController) {
             ndefController.abort();
