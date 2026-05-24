@@ -57,30 +57,29 @@
             100% { opacity: 1; transform: scale(1); }
         }
 
-        /* Contenedor deslizante horizontal para las páginas */
+        /* Contenedor deslizante horizontal para las 5 páginas actuales */
         #main-wrapper {
             display: flex;
-            width: 400vw;
+            width: 500vw; /* Incrementado para soportar 5 pantallas en total */
             height: 100dvh;
             transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
             visibility: hidden;
         }
 
-        /* Estructura fija para que TODO quepa sin hacer scroll */
+        /* Estructura fija sin scroll */
         .container {
             width: 100vw;
             height: 100dvh;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: space-between; /* Distribuye el contenido perfectamente de arriba a abajo */
+            justify-content: space-between; 
             padding: calc(2vh + env(safe-area-inset-top)) 20px calc(2vh + env(safe-area-inset-bottom)) 20px;
             flex-shrink: 0;
-            overflow: hidden; /* Evita que aparezca barra de scroll */
+            overflow: hidden; 
             position: relative;
         }
 
-        /* Secciones internas con tamaños proporcionales */
         .header-section {
             width: 100%;
             display: flex;
@@ -89,46 +88,48 @@
             flex-shrink: 0;
         }
 
-        /* Título VERIFY HAT más grande y limpio */
         .main-title-v1 { 
             font-size: clamp(46px, 14vw, 62px); 
             font-weight: 900; 
             margin-bottom: 8px; 
             line-height: 0.9; 
             letter-spacing: -1px;
+            text-align: center;
         }
 
+        /* Alineación y centrado del texto de instrucción */
         .instruction-text { 
             font-size: 10px; 
             font-weight: 700; 
-            line-height: 1.4; 
-            max-width: 300px; 
+            line-height: 1.5; 
+            max-width: 310px; 
             text-transform: uppercase; 
             letter-spacing: 0.3px;
+            text-align: center; /* Perfectamente centrado */
+            margin: 0 auto;
         }
         
-        /* Logo principal en Home ajustado */
         .logo-large { 
             width: 68vw; 
             max-width: 260px; 
             height: auto;
-            margin: auto 0; /* Centrado vertical perfecto en el espacio restante */
+            margin: auto 0; 
         }
 
-        /* ZONA DE PRODUCTOS: Ajustes idénticos a las capturas proporcionadas */
+        /* Estilos de productos */
         .logo-img { 
             width: 65px; 
             height: auto; 
             margin-bottom: 5px; 
         }
 
-        /* AUTHENTIC Gigante como en la foto */
         .brand-title { 
             font-size: clamp(52px, 15vw, 72px); 
             font-weight: 900; 
             letter-spacing: -1.5px; 
             line-height: 0.85; 
             text-transform: uppercase; 
+            text-align: center;
         }
 
         .brand-subtitle { 
@@ -137,25 +138,25 @@
             margin-top: 2px; 
             text-transform: uppercase; 
             letter-spacing: -0.5px;
+            text-align: center;
         }
 
-        /* Contenedor e imagen de la Gorra centrada y contenida */
         .product-container {
             flex: 1;
             display: flex;
             align-items: center;
             justify-content: center;
             width: 100%;
-            min-height: 0; /* Permite que el contenedor se encoja si la pantalla es enana */
+            min-height: 0; 
         }
 
         .product-img {
             max-width: 90%;
-            max-height: 38vh; /* Protege el espacio para evitar empujar el footer hacia abajo */
+            max-height: 38vh; 
             object-fit: contain;
         }
 
-        /* Footer unificado y compacto */
+        /* Footer */
         .footer { 
             width: 100%;
             display: flex;
@@ -205,7 +206,7 @@
             letter-spacing: 0.1px;
         }
 
-        /* Botón de salida */
+        /* Botón atrás */
         .back-button { 
             position: absolute; 
             top: calc(15px + env(safe-area-inset-top)); 
@@ -365,6 +366,33 @@
             <div class="footer-copyright">© 2025 EL BARBAS HATS. ALL RIGHTS RESERVED.</div>
         </div>
     </div>
+
+    <div class="container" id="screen-5">
+        <div class="back-button" onclick="irAInicio()">
+            <img src="exitt.png" class="exit-img" alt="Back">
+        </div>
+
+        <div class="header-section">
+            <img src="logo.png" class="logo-img">
+            <h1 class="brand-title">AUTHENTIC</h1>
+            <div class="brand-subtitle">F.E.S</div>
+        </div>
+
+        <div class="product-container">
+            <img src="gorra4.png" class="product-img">
+        </div>
+
+        <div class="footer">
+            <div class="scan-label">TOTAL SCAN COUNT :</div>
+            <div class="counter-group">
+                <span id="count-fes">1</span>
+                <span>SCANS</span>
+            </div>
+            <img src="verify.png" class="verify-btn" style="cursor: default;">
+            <div class="footer-text">QUIEN MÁS SI NO BARBAS?</div>
+            <div class="footer-copyright">© 2025 EL BARBAS HATS. ALL RIGHTS RESERVED.</div>
+        </div>
+    </div>
 </div>
 
 <div id="nfc-screen">
@@ -387,10 +415,12 @@
     const loadingScreen = document.getElementById('loading-screen');
     const nfcStatusText = document.getElementById('nfc-status-text');
 
+    // Llaves de almacenamiento incluyendo la nueva gorra F.E.S
     const keys = {
         1: "scan_galaxy_v3",
         2: "scan_scream_v3",
-        3: "scan_heartbreaker_v3"
+        3: "scan_heartbreaker_v3",
+        4: "scan_fes_v3"
     };
 
     let ndefController = null;
@@ -410,19 +440,27 @@
         const cGalaxy = document.getElementById("count-galaxy");
         const cScream = document.getElementById("count-scream");
         const cHeartbreaker = document.getElementById("count-heartbreaker");
+        const cFes = document.getElementById("count-fes");
 
         if (!localStorage.getItem(keys[1])) localStorage.setItem(keys[1], "1");
         if (!localStorage.getItem(keys[2])) localStorage.setItem(keys[2], "1");
         if (!localStorage.getItem(keys[3])) localStorage.setItem(keys[3], "1");
+        if (!localStorage.getItem(keys[4])) localStorage.setItem(keys[4], "1");
 
         cGalaxy.innerText = localStorage.getItem(keys[1]);
         cScream.innerText = localStorage.getItem(keys[2]);
         cHeartbreaker.innerText = localStorage.getItem(keys[3]);
+        cFes.innerText = localStorage.getItem(keys[4]);
     }
 
     function incrementarContador(tipo) {
         const key = keys[tipo];
-        let elemento = document.getElementById(tipo === 1 ? "count-galaxy" : tipo === 2 ? "count-scream" : "count-heartbreaker");
+        let elemento;
+        
+        if (tipo === 1) elemento = document.getElementById("count-galaxy");
+        else if (tipo === 2) elemento = document.getElementById("count-scream");
+        else if (tipo === 3) elemento = document.getElementById("count-heartbreaker");
+        else if (tipo === 4) elemento = document.getElementById("count-fes");
 
         let actual = parseInt(localStorage.getItem(key)) || 1;
         let nuevo = actual + 1;
@@ -452,6 +490,7 @@
                         if (textoEscaneado.includes("1")) { window.activarPantalla(1); break; }
                         else if (textoEscaneado.includes("2")) { window.activarPantalla(2); break; }
                         else if (textoEscaneado.includes("3")) { window.activarPantalla(3); break; }
+                        else if (textoEscaneado.includes("4")) { window.activarPantalla(4); break; }
                         else {
                             nfcStatusText.innerText = "Invalid Tag Data";
                             dotsContainer.classList.remove('animate-dots');
@@ -480,6 +519,7 @@
             if (tipo === 1) wrapper.style.transform = 'translateX(-100vw)';
             else if (tipo === 2) wrapper.style.transform = 'translateX(-200vw)';
             else if (tipo === 3) wrapper.style.transform = 'translateX(-300vw)';
+            else if (tipo === 4) wrapper.style.transform = 'translateX(-400vw)';
         }, 350);
     };
 
