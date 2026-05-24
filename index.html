@@ -22,48 +22,12 @@
             color: #000;
         }
 
-        /* Pantalla de carga negra por 2 segundos */
-        #loading-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100dvh;
-            background: #000000;
-            z-index: 999;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: opacity 0.4s ease-in-out;
-        }
-
-        .loading-logo {
-            width: 32vw; 
-            max-width: 140px;
-            height: auto;
-            opacity: 0;
-            transform: scale(0.9);
-            /* Ajustado a 2.0s para sincronizar con el desvanecimiento */
-            animation: smoothHeartbeat 2.0s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-            will-change: transform, opacity;
-        }
-
-        @keyframes smoothHeartbeat {
-            0% { opacity: 0; transform: scale(0.9); }
-            20% { opacity: 0.4; transform: scale(0.94); }
-            35% { opacity: 1; transform: scale(1.06); }
-            50% { transform: scale(0.98); }
-            65% { transform: scale(1.01); }
-            75% { transform: scale(1); opacity: 1; }
-            100% { opacity: 1; transform: scale(1); }
-        }
-
-        /* Contenedor principal: Manejo por opacidad e intercambio directo de pantallas */
+        /* Contenedor principal visible por defecto tras remover la carga */
         #main-wrapper {
             position: relative;
             width: 100vw;
             height: 100dvh;
-            visibility: hidden;
+            visibility: visible;
         }
 
         /* Estructura base de los contenedores */
@@ -349,10 +313,6 @@
 </head>
 <body>
 
-<div id="loading-screen">
-    <img src="logoo.png" class="loading-logo" alt="Loading...">
-</div>
-
 <div id="main-wrapper">
     <div class="container active" id="screen-1">
         <div class="header-section">
@@ -495,7 +455,6 @@
     const wrapper = document.getElementById('main-wrapper');
     const nfcScreen = document.getElementById('nfc-screen');
     const dotsContainer = document.getElementById('dots-container');
-    const loadingScreen = document.getElementById('loading-screen');
     const nfcStatusText = document.getElementById('nfc-status-text');
 
     const keys = {
@@ -508,18 +467,8 @@
     let ndefController = null;
 
     function gestionarCarga() {
+        // Carga inicial directa de contadores sin retraso de pantalla negra
         inicializarContadores();
-        
-        // Ejecución forzada a los 2 segundos exactos (2000 milisegundos)
-        setTimeout(() => {
-            loadingScreen.style.opacity = '0';
-            wrapper.style.visibility = 'visible';
-            
-            // Remueve por completo el contenedor una vez termina la transición visual
-            setTimeout(() => {
-                loadingScreen.style.display = 'none';
-            }, 400);
-        }, 2000);
     }
 
     function inicializarContadores() {
